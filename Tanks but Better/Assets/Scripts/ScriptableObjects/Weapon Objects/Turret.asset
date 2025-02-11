@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Turret
   damage: 10
-  maxDistance: 200
-  currentAmmo: 100
-  magSize: 100
-  fireRate: 60
+  shootForce: 300
+  upwardForce: 0
+  currentAmmo: 0
+  magSize: 200
+  totalAmmo: 800
+  fireRate: 1
+  spread: 1
   reloadTime: 5
-  reloading: 0
+  allowButtonHold: 1
+  bullet: {fileID: 2757390642065922230, guid: 1d5b0bdef20fd464380d398786f44df2, type: 3}

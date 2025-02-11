@@ -7,14 +7,18 @@ public class WeaponData : ScriptableObject
     [Header("Gun Info")]
     public new string name;
 
-    [Header("Shooting")]
+    [Header("Gun Stats")]
     public float damage;
-    public float maxDistance;
-
-    [Header("Reloading")]
+    public float shootForce;
+    public float upwardForce;
     public int currentAmmo;
     public int magSize;
-    public float fireRate;
+    public int totalAmmo;
+    public int fireRate;
+    public float spread;
     public float reloadTime;
-    [HideInInspector] public bool reloading;
+    public bool allowButtonHold;
+
+    [Header("Bullet Info")]
+    public GameObject bullet;    
 }
