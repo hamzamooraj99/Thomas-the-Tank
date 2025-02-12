@@ -1,28 +1,36 @@
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+using System.Collections;
 
 public class TankShoot : MonoBehaviour
 {
+    [Header("Weapon Info")]
     [SerializeField] WeaponData weaponData;
-
     public float timeBetweenShooting, timeBetweenShots;
-
     public int bulletsShot;
-
     private bool shooting, readyToShoot, reloading;
 
-    public Rigidbody playerRB;
+    [Header("Player References")]
+    [SerializeField] Rigidbody playerRB;
+    [SerializeField] Camera fpsCam;
+    [SerializeField] Transform spawnPoint;
 
-    public Camera fpsCam;
-    public Transform spawnPoint;
+    [Header("UI References")]
+    [SerializeField] Toggle[] ammoList;
+    [SerializeField] TMP_Text ammoCount;
+    [SerializeField] Slider reloadBar;
+    [SerializeField] GameObject reloadBarObject;
+    [SerializeField] Slider batterySlider;
 
-    public bool allowInvoke = true;
+    [HideInInspector] public bool allowInvoke = true;
 
     private void Awake()
     {
         weaponData = Instantiate(weaponData);
         weaponData.currentAmmo = weaponData.magSize;
-        weaponData.totalAmmo -= weaponData.magSize;
         readyToShoot = true;
+        reloadBarObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -42,13 +50,14 @@ public class TankShoot : MonoBehaviour
         if(readyToShoot && shooting && !reloading && weaponData.currentAmmo > 0){
             bulletsShot = 0;
             Shoot();
+            Reloading();
         }
 
-        //RELOAD
-        if(Input.GetKeyDown(KeyCode.E) && weaponData.currentAmmo < weaponData.magSize && !reloading)
-            Reloading();
-        if(readyToShoot && shooting && !reloading && weaponData.currentAmmo == 0)
-            Reloading();
+        // //RELOAD
+        // if(Input.GetKeyDown(KeyCode.E) && weaponData.currentAmmo < weaponData.magSize && !reloading)
+        //     Reloading();
+        // if(readyToShoot && shooting && !reloading && weaponData.currentAmmo == 0)
+        //     Reloading();
     }
 
     void Shoot()
@@ -80,7 +89,10 @@ public class TankShoot : MonoBehaviour
         currBullet.GetComponent<Rigidbody>().AddForce(fpsCam.transform.up * weaponData.upwardForce, ForceMode.Impulse);
 
         weaponData.currentAmmo--;
+        weaponData.totalAmmo--;
         bulletsShot++;
+
+        AmmoUI();
 
         if(allowInvoke){
             Invoke("ResetShot", timeBetweenShooting);
@@ -102,20 +114,42 @@ public class TankShoot : MonoBehaviour
     void Reloading()
     {
         reloading = true;
-        Invoke("Reloaded", weaponData.reloadTime);
-        Debug.Log("RELOADING");
+        reloadBarObject.SetActive(true);
+        StartCoroutine(ReloadTimer());
+        // Invoke("Reloaded", weaponData.reloadTime);
+        // Debug.Log("RELOADING");
+    }
+
+    IEnumerator ReloadTimer()
+    {
+        reloadBar.value = 0;
+        float elapsedTime = 0;
+
+        while(elapsedTime < weaponData.reloadTime){
+            elapsedTime += Time.deltaTime;
+            reloadBar.value = elapsedTime / weaponData.reloadTime;
+            yield return null;
+        }
+
+        Reloaded();
     }
 
     void Reloaded()
     {
         if(weaponData.totalAmmo > 0){
-            int ammoToLoad = Mathf.Min(weaponData.magSize - weaponData.currentAmmo, weaponData.totalAmmo);
             weaponData.currentAmmo = weaponData.magSize;
-            weaponData.totalAmmo -= ammoToLoad;
+            reloadBarObject.SetActive(false);
             reloading = false;
         } else {
             Debug.Log("NO AMMO");
             reloading = false;
         }
+    }
+
+    private void AmmoUI()
+    {
+        int index = weaponData.totalAmmo;
+        ammoCount.text = index.ToString();
+        ammoList[index].isOn = false;
     }
 }
