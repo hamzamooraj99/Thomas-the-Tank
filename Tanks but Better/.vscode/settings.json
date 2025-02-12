@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Tanks but Better.sln"
+    "dotnet.defaultSolution": "Tanks but Better.sln",
+    "editor.codeLens": false
 }

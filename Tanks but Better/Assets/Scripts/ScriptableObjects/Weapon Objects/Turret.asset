@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Turret
   m_EditorClassIdentifier: 
   name: Turret
-  damage: 10
+  damage: 2
   shootForce: 300
   upwardForce: 0
   currentAmmo: 0
@@ -22,5 +22,6 @@ MonoBehaviour:
   fireRate: 1
   spread: 1
   reloadTime: 5
+  recoilForce: 1
   allowButtonHold: 1
   bullet: {fileID: 2757390642065922230, guid: 1d5b0bdef20fd464380d398786f44df2, type: 3}

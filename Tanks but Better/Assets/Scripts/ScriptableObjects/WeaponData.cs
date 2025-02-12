@@ -17,7 +17,9 @@ public class WeaponData : ScriptableObject
     public int fireRate;
     public float spread;
     public float reloadTime;
+    public float recoilForce;
     public bool allowButtonHold;
+
 
     [Header("Bullet Info")]
     public GameObject bullet;    

@@ -14,9 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Cannon
   damage: 40
-  maxDistance: 400
-  currentAmmo: 1
-  magSize: 10
-  fireRate: 6
+  shootForce: 1000
+  upwardForce: 0
+  currentAmmo: 0
+  magSize: 1
+  totalAmmo: 10
+  fireRate: 1
+  spread: 0
   reloadTime: 3
-  reloading: 0
+  recoilForce: 3
+  allowButtonHold: 0
+  bullet: {fileID: 5960273902514205099, guid: a31645e8dd65ef547af040bcb531701a, type: 3}

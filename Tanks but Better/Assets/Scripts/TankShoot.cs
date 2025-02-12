@@ -10,6 +10,8 @@ public class TankShoot : MonoBehaviour
 
     private bool shooting, readyToShoot, reloading;
 
+    public Rigidbody playerRB;
+
     public Camera fpsCam;
     public Transform spawnPoint;
 
@@ -83,6 +85,8 @@ public class TankShoot : MonoBehaviour
         if(allowInvoke){
             Invoke("ResetShot", timeBetweenShooting);
             allowInvoke = false;
+            playerRB.AddForce(-directionWithSpread.normalized * weaponData.recoilForce, ForceMode.Impulse);
+
         }
 
         if (bulletsShot < weaponData.fireRate && weaponData.currentAmmo > 0)
@@ -105,8 +109,9 @@ public class TankShoot : MonoBehaviour
     void Reloaded()
     {
         if(weaponData.totalAmmo > 0){
+            int ammoToLoad = Mathf.Min(weaponData.magSize - weaponData.currentAmmo, weaponData.totalAmmo);
             weaponData.currentAmmo = weaponData.magSize;
-            weaponData.totalAmmo -= weaponData.magSize;
+            weaponData.totalAmmo -= ammoToLoad;
             reloading = false;
         } else {
             Debug.Log("NO AMMO");
