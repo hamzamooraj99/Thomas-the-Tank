@@ -1,11 +1,24 @@
+using System;
+using TMPro;
+using TMPro.EditorUtilities;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TankInfo : MonoBehaviour
 {
     [SerializeField] TankData tankData;
 
+    // [Header("UI References")]
+    // [SerializeField] Slider batteryBar;
+    // [SerializeField] TMP_Text batteryAmount;
+    // [SerializeField] Slider armourBar;
+    // [SerializeField] TMP_Text armourAmount;
+
     private int currArmour;
+
     private int currBattery;
+    private bool isPlayabale;
+
     private WeaponData weapon;
 
     #region Getters
@@ -34,19 +47,25 @@ public class TankInfo : MonoBehaviour
     }
     #endregion
 
+    void Awake()
+    {
+        tankData = Instantiate(tankData);   
+    }
     void Start()
     {
         InitialiseTank();
+        
     }
 
     void InitialiseTank()
     {
-        tankData = Instantiate(tankData);
         currArmour = tankData.armour;
         currBattery = tankData.battery;
         weapon = tankData.weapon;
+        isPlayabale = tankData.playable;
 
-        Debug.Log($"Tank {tankData.name} initialised with {currArmour} armour, {currBattery} battery and a {weapon.name}");
+        string play = isPlayabale ? "playable" : "not playable";
+        Debug.Log($"Tank {tankData.name} initialised with {currArmour} armour, {currBattery} battery and a {weapon.name}. The character is {play}");
     }
 
     public void TakeDamage(int damage)
@@ -56,5 +75,10 @@ public class TankInfo : MonoBehaviour
             Destroy(gameObject);
             Debug.Log($"{tankData.name} destroyed");
         }
+    }
+
+    public void UpdateHealth()
+    {
+        
     }
 }
