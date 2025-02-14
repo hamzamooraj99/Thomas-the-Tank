@@ -1324,7 +1324,7 @@ Rigidbody:
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 768
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1374,10 +1374,10 @@ MonoBehaviour:
   frontLeftMesh: {fileID: 8657468764863442236}
   backRightMesh: {fileID: 9190769769564939572}
   backLeftMesh: {fileID: 339922079217614851}
-  acceleration: 3
-  brakingForce: 3
-  turnSpeed: 5
-  turnSpeedWhileMoving: 6
+  acceleration: 2
+  brakingForce: 2
+  turnSpeed: 3
+  accelerationWhileTurning: 3
 --- !u!114 &5826386423051419533
 MonoBehaviour:
   m_ObjectHideFlags: 0

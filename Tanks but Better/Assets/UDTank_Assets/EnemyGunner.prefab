@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 356322792235120264}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -326,7 +326,7 @@ WheelCollider:
     m_Stiffness: 1
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -358,7 +358,7 @@ Transform:
   m_GameObject: {fileID: 3174739580050744890}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.68275356, z: -0, w: 0.7306488}
-  m_LocalPosition: {x: -1.8714116, y: 0.064980865, z: -0.46193755}
+  m_LocalPosition: {x: -1.8714123, y: 0.064980865, z: -0.46193743}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -380,7 +380,6 @@ GameObject:
   - component: {fileID: 6402893874103943518}
   - component: {fileID: 2433671471601721315}
   - component: {fileID: 3007489459744910498}
-  - component: {fileID: 2422722798620939227}
   m_Layer: 0
   m_Name: Cannon
   m_TagString: Untagged
@@ -478,41 +477,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.16141124, y: 0.16141151, z: 0.9240413}
   m_Center: {x: -0.0000009797516, y: -0.000000059604645, z: 0.46202058}
---- !u!114 &2422722798620939227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3997032915412801134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26bfb19a61e153c4d87d4e6a403a254a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponData: {fileID: 11400000, guid: f7e7cefcd0c4ad845954078dc95b2256, type: 2}
-  timeBetweenShooting: 0.1
-  timeBetweenShots: 0
-  bulletsShot: 0
-  playerRB: {fileID: 8570114935037592278}
-  fpsCam: {fileID: 0}
-  spawnPoint: {fileID: 2393257980044727493}
-  ammoList:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  ammoCount: {fileID: 0}
-  reloadBar: {fileID: 0}
-  reloadBarObject: {fileID: 0}
-  batterySlider: {fileID: 0}
-  allowInvoke: 1
 --- !u!1 &4249498794958004543
 GameObject:
   m_ObjectHideFlags: 0
@@ -719,10 +683,10 @@ WheelCollider:
     m_Stiffness: 1
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   m_LayerOverridePriority: 0
   m_Enabled: 1
   m_ProvidesContacts: 0
@@ -986,7 +950,7 @@ WheelCollider:
     m_Stiffness: 1
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1004,8 +968,10 @@ GameObject:
   - component: {fileID: 5729819752070103311}
   - component: {fileID: 8570114935037592278}
   - component: {fileID: 8035155999423074441}
-  - component: {fileID: 4271525765079735937}
   - component: {fileID: 4550369816469345288}
+  - component: {fileID: 7173662897559497344}
+  - component: {fileID: 5143680034165056852}
+  - component: {fileID: 1652813043105081859}
   m_Layer: 0
   m_Name: EnemyGunner
   m_TagString: Untagged
@@ -1021,14 +987,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7169190364709667624}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.46335435, z: -0, w: 0.8861731}
-  m_LocalPosition: {x: -8.03, y: 1.0706729, z: -14.97}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 20.55, y: 1.062, z: -13.402473}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7333165713195971796}
   - {fileID: 8672433008368485148}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 55.208, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &8570114935037592278
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1045,7 +1012,7 @@ Rigidbody:
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1073,33 +1040,8 @@ MonoBehaviour:
   tankCannon: {fileID: 3997032915412801134}
   sensitivityX: 120
   sensitivityY: 120
-  turretLag: 0.5
   cam: {fileID: 0}
   orientation: {fileID: 0}
---- !u!114 &4271525765079735937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7169190364709667624}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6793d33cef0123b47b7e98f37171bdf7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  frontRight: {fileID: 7537953732681785537}
-  frontLeft: {fileID: 552494239242698644}
-  backRight: {fileID: 6164637072448298218}
-  backLeft: {fileID: 5685518717564840083}
-  frontRightMesh: {fileID: 5724199867378370376}
-  frontLeftMesh: {fileID: 5671153984692471429}
-  backRightMesh: {fileID: 1673840977650483616}
-  backLeftMesh: {fileID: 8756538032936481120}
-  acceleration: 3
-  brakingForce: 3
-  turnSpeed: 5
-  turnSpeedWhileMoving: 6
 --- !u!114 &4550369816469345288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1112,7 +1054,93 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b82d88fd80f6dd84ca0d73ece1d1cbf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tankData: {fileID: 11400000, guid: 5497147fcd97b224c8a796f90c770c8f, type: 2}
+  tankData: {fileID: 11400000, guid: 8fa3baf5f770efd45898d3fad002c769, type: 2}
+--- !u!195 &7173662897559497344
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169190364709667624}
+  m_Enabled: 1
+  m_AgentTypeID: -1372625422
+  m_Radius: 1.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 0
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1.5
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &5143680034165056852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169190364709667624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5106cdc2556bf04a9f593baf94d1392, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  moveSpeed: 2
+  turnSpeed: 2
+  accelerationWhileTurning: 2
+  brakeForce: 2
+  lookAheadDistance: 2
+  stoppingDistance: 10
+  minSpeed: 1
+  maxAngle: 90
+  avoidanceDistance: 2
+  avoidanceForce: 2
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  fovAngle: 90
+  fovRange: 30
+  towerRotationSpeed: 2
+  towerScanSpeed: 2
+  patrolTowerScanAngle: 90
+  patrolAreaCenter: {fileID: 7333165713195971796}
+  patrolAreaRadius: 20
+  minPatrolDistance: 10
+  waypoints: []
+  tankBody: {fileID: 8817039172995072510}
+  tankTower: {fileID: 5093988901531111092}
+  tankCannon: {fileID: 3997032915412801134}
+  frontRight: {fileID: 7537953732681785537}
+  frontLeft: {fileID: 552494239242698644}
+  backRight: {fileID: 6164637072448298218}
+  backLeft: {fileID: 5685518717564840083}
+  frontRightMesh: {fileID: 5724199867378370376}
+  frontLeftMesh: {fileID: 5671153984692471429}
+  backRightMesh: {fileID: 1673840977650483616}
+  backLeftMesh: {fileID: 8756538032936481120}
+--- !u!114 &1652813043105081859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169190364709667624}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b8eba9f8b8ca549882b119c04a19c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frontRight: {fileID: 7537953732681785537}
+  frontLeft: {fileID: 552494239242698644}
+  backRight: {fileID: 6164637072448298218}
+  backLeft: {fileID: 5685518717564840083}
+  showDebug: 0
+  debugLineLength: 1
 --- !u!1 &7614209386966035133
 GameObject:
   m_ObjectHideFlags: 0
@@ -1232,7 +1260,7 @@ WheelCollider:
     m_Stiffness: 1
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1437,3 +1465,34 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -8964106073494916162, guid: 3d210b2be9d4b9144b53828dfc2e73e3, type: 3}
+--- !u!1 &9039178681641582625
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7333165713195971796}
+  m_Layer: 0
+  m_Name: PatrolCentre
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7333165713195971796
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9039178681641582625}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -16.599998, y: -0.35200006, z: 10.772473}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5729819752070103311}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
