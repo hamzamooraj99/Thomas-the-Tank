@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -19,12 +21,27 @@ public class VehicleMovement : MonoBehaviour
     public float acceleration = 3f;
     public float brakingForce = 3f;
     public float turnSpeed = 4f;
-    public float turnSpeedWhileMoving = 6f;
+    public float accelerationWhileTurning = 5f;
 
     private float currAcceleration;
     private float currBrakeForce;
+    private float turnInput;
+
+    private float smoothTorqueFrontRight;
+    private float smoothTorqueFrontLeft;
+    private float smoothTorqueBackRight;
+    private float smoothTorqueBackLeft;
+
+    void Awake()
+    {
+    }
 
     private void FixedUpdate()
+    {
+        PlayerControl();
+    }
+
+    private void PlayerControl()
     {
         //Input Handling
         currAcceleration = acceleration * Input.GetAxis("Vertical");
@@ -33,10 +50,14 @@ public class VehicleMovement : MonoBehaviour
         else
             currBrakeForce = 0f;
 
-        float turnInput = Input.GetAxis("Horizontal");
-        
-        //Movement
-        Accelerate();
+        turnInput = Input.GetAxis("Horizontal");
+
+        ApplyMovement(currAcceleration, turnInput);
+    }
+
+    public void ApplyMovement(float acceleration, float turnInput)
+    {
+        Accelerate(acceleration);
         Brake();
         Turn(turnInput);
 
@@ -45,25 +66,14 @@ public class VehicleMovement : MonoBehaviour
         UpdateWheel(frontLeft, frontLeftMesh);
         UpdateWheel(backRight, backRightMesh);
         UpdateWheel(backLeft, backLeftMesh);
-
     }
 
-    void UpdateWheel(WheelCollider collider, Transform mesh)
+    void Accelerate(float acceleration)
     {
-        Vector3 position;
-        Quaternion rotation;
-
-        collider.GetWorldPose(out position, out rotation);
-
-        mesh.position = position; mesh.rotation = rotation;
-    }
-
-    void Accelerate()
-    {
-        frontRight.motorTorque = currAcceleration;
-        frontLeft.motorTorque = currAcceleration;
-        backRight.motorTorque = currAcceleration;
-        backLeft.motorTorque = currAcceleration;
+        frontRight.motorTorque = acceleration;
+        frontLeft.motorTorque = acceleration;
+        backRight.motorTorque = acceleration;
+        backLeft.motorTorque = acceleration;
     }
 
     void Brake()
@@ -77,14 +87,38 @@ public class VehicleMovement : MonoBehaviour
     void Turn(float turnInput)
     {
         if(turnInput != 0){
-            if(currAcceleration < 0.5){
-                frontRight.motorTorque = -turnInput * turnSpeed; backRight.motorTorque = -turnInput * turnSpeed;
-                frontLeft.motorTorque = turnInput * turnSpeed; backLeft.motorTorque = turnInput * turnSpeed;
-            } else {
-                frontRight.motorTorque = -turnInput * turnSpeedWhileMoving; backRight.motorTorque = -turnInput * turnSpeedWhileMoving;
-                frontLeft.motorTorque = turnInput * turnSpeedWhileMoving; backLeft.motorTorque = turnInput * turnSpeedWhileMoving;
-            }
+            float differentialTorque = turnInput * turnSpeed;
+
+            // Smoothly apply torque
+            smoothTorqueFrontRight = Mathf.Lerp(smoothTorqueFrontRight, -differentialTorque, Time.deltaTime * 10f);
+            smoothTorqueFrontLeft = Mathf.Lerp(smoothTorqueFrontLeft, differentialTorque, Time.deltaTime * 10f);
+            smoothTorqueBackRight = Mathf.Lerp(smoothTorqueBackRight, -differentialTorque, Time.deltaTime * 10f);
+            smoothTorqueBackLeft = Mathf.Lerp(smoothTorqueBackLeft, differentialTorque, Time.deltaTime * 10f);
+
+            frontRight.motorTorque += smoothTorqueFrontRight;
+            frontLeft.motorTorque += smoothTorqueFrontLeft;
+            backRight.motorTorque += smoothTorqueBackRight;
+            backLeft.motorTorque += smoothTorqueBackLeft;
+
+
+            // if(currAcceleration < 0.5){
+            //     frontRight.motorTorque = -turnInput * turnSpeed; backRight.motorTorque = -turnInput * turnSpeed;
+            //     frontLeft.motorTorque = turnInput * turnSpeed; backLeft.motorTorque = turnInput * turnSpeed;
+            // } else {
+            //     frontRight.motorTorque = -turnInput * accelerationWhileTurning; backRight.motorTorque = -turnInput * accelerationWhileTurning;
+            //     frontLeft.motorTorque = turnInput * accelerationWhileTurning; backLeft.motorTorque = turnInput * accelerationWhileTurning;
+            // }
             
         }
+    }
+
+    void UpdateWheel(WheelCollider collider, Transform mesh)
+    {
+        Vector3 position;
+        Quaternion rotation;
+
+        collider.GetWorldPose(out position, out rotation);
+
+        mesh.position = position; mesh.rotation = rotation;
     }
 }
