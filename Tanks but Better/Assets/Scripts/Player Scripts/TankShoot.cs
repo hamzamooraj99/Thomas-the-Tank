@@ -6,7 +6,7 @@ using System.Collections;
 public class TankShoot : MonoBehaviour
 {
     [Header("Weapon Info")]
-    [SerializeField] WeaponData weaponData;
+    [SerializeField, HideInInspector] WeaponData weaponData;
     public float timeBetweenShooting, timeBetweenShots;
     public int bulletsShot;
     private bool shooting, readyToShoot, reloading;
@@ -27,9 +27,13 @@ public class TankShoot : MonoBehaviour
 
     [HideInInspector] public bool allowInvoke = true;
 
-    private void Awake()
+    private void Start()
     {
-        weaponData = Instantiate(weaponData);
+        PlayerTankInfo playerTankInfo = GetComponentInParent<PlayerTankInfo>();
+        if(playerTankInfo != null)
+            weaponData = playerTankInfo.weapon;
+        else
+            Debug.Log("TankShoot: Tank Info not found");
         weaponData.currentAmmo = weaponData.magSize;
         readyToShoot = true;
         reloadBarObject.SetActive(false);
@@ -104,7 +108,7 @@ public class TankShoot : MonoBehaviour
         weaponData.totalAmmo--;
         bulletsShot++;
 
-        AmmoUI();
+        AmmoUI("shoot");
 
         if(allowInvoke){
             Invoke("ResetShot", timeBetweenShooting);
@@ -161,11 +165,14 @@ public class TankShoot : MonoBehaviour
         }
     }
 
-    private void AmmoUI()
+    public void AmmoUI(string state)
     {
         int index = weaponData.totalAmmo;
         ammoCount.text = index.ToString();
-        ammoList[index].isOn = false;
+        if(state == "shoot")
+            ammoList[index].isOn = false;
+        else
+            ammoList[index-1].isOn = true;
     }
 
     private void ShowNoAmmoWarning()
@@ -174,7 +181,7 @@ public class TankShoot : MonoBehaviour
             FlashingEffect();
     }
 
-    private void FlashingEffect()
+    public void FlashingEffect()
     {
         if(weaponData.totalAmmo == 0){
             if(!isFlashing){
