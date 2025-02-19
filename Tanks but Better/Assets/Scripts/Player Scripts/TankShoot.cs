@@ -21,7 +21,9 @@ public class TankShoot : MonoBehaviour
     [SerializeField] TMP_Text ammoCount;
     [SerializeField] Slider reloadBar;
     [SerializeField] GameObject reloadBarObject;
-    [SerializeField] Slider batterySlider;
+    [SerializeField] TMP_Text noAmmoWarning;
+    private Coroutine noAmmoWarningFlash;
+    private bool isFlashing = false;
 
     [HideInInspector] public bool allowInvoke = true;
 
@@ -31,6 +33,8 @@ public class TankShoot : MonoBehaviour
         weaponData.currentAmmo = weaponData.magSize;
         readyToShoot = true;
         reloadBarObject.SetActive(false);
+        if(noAmmoWarning != null)
+            noAmmoWarning.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -52,6 +56,9 @@ public class TankShoot : MonoBehaviour
             Shoot();
             Reloading();
         }
+
+        if(weaponData.currentAmmo == 0 && !reloading)
+            ShowNoAmmoWarning();
 
         // //RELOAD
         // if(Input.GetKeyDown(KeyCode.E) && weaponData.currentAmmo < weaponData.magSize && !reloading)
@@ -83,6 +90,11 @@ public class TankShoot : MonoBehaviour
 
         //Instantiate Bullet
         GameObject currBullet = Instantiate(weaponData.bullet, spawnPoint.position, Quaternion.identity);
+        currBullet.layer = spawnPoint.gameObject.layer;
+        //Set Bullet damage from weapon data
+        BulletDamage bulletDamage = currBullet.GetComponent<BulletDamage>();
+        if(bulletDamage != null)
+            bulletDamage.damage = weaponData.damage;
         //Move bullet
         currBullet.transform.forward = directionWithSpread.normalized;
         currBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * weaponData.shootForce, ForceMode.Impulse);
@@ -113,9 +125,12 @@ public class TankShoot : MonoBehaviour
 
     void Reloading()
     {
-        reloading = true;
-        reloadBarObject.SetActive(true);
-        StartCoroutine(ReloadTimer());
+        if(weaponData.totalAmmo > 0){
+            reloading = true;
+            reloadBarObject.SetActive(true);
+            StartCoroutine(ReloadTimer());
+        }
+        
         // Invoke("Reloaded", weaponData.reloadTime);
         // Debug.Log("RELOADING");
     }
@@ -151,5 +166,46 @@ public class TankShoot : MonoBehaviour
         int index = weaponData.totalAmmo;
         ammoCount.text = index.ToString();
         ammoList[index].isOn = false;
+    }
+
+    private void ShowNoAmmoWarning()
+    {
+        if(noAmmoWarning != null)
+            FlashingEffect();
+    }
+
+    private void FlashingEffect()
+    {
+        if(weaponData.totalAmmo == 0){
+            if(!isFlashing){
+                noAmmoWarning.gameObject.SetActive(true);
+                isFlashing = true;
+                noAmmoWarningFlash = StartCoroutine(FlashNoAmmo());
+            }
+        }else{
+            isFlashing = false;
+            if(noAmmoWarningFlash != null){
+                StopCoroutine(FlashNoAmmo());
+                noAmmoWarningFlash = null;
+            }
+            noAmmoWarning.gameObject.SetActive(false);
+        }
+    }
+
+    private IEnumerator FlashNoAmmo()
+    {
+        yield return new WaitForSeconds(0.2f);
+        while (isFlashing){
+            float duration = 0.75f;
+            float elapsedTime = 0f;
+
+            while(elapsedTime < duration){
+                float t = Mathf.PingPong(elapsedTime * 2, 1);
+                Color newRed = new Color(0.7450981f, 0.1882353f, 0.1882353f);
+                noAmmoWarning.color = Color.Lerp(newRed, Color.white, t);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+        }
     }
 }
