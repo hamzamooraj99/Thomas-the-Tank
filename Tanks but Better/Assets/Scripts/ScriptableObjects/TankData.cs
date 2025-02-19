@@ -10,7 +10,6 @@ public class TankData : ScriptableObject
     public bool friendly;
 
     [Header("Tank Stats")]
-    public int armour;
     public int battery;
     public WeaponData weapon;
 }

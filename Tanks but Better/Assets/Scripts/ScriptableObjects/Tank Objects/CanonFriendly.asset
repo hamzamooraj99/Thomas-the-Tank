@@ -15,6 +15,5 @@ MonoBehaviour:
   name: CanonFriendly
   playable: 0
   friendly: 1
-  armour: 200
-  battery: 100
+  battery: 200
   weapon: {fileID: 11400000, guid: f7e7cefcd0c4ad845954078dc95b2256, type: 2}

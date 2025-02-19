@@ -968,10 +968,10 @@ GameObject:
   - component: {fileID: 5729819752070103311}
   - component: {fileID: 8570114935037592278}
   - component: {fileID: 8035155999423074441}
-  - component: {fileID: 4550369816469345288}
   - component: {fileID: 7173662897559497344}
   - component: {fileID: 5143680034165056852}
   - component: {fileID: 1652813043105081859}
+  - component: {fileID: 5811772627741673921}
   m_Layer: 0
   m_Name: EnemyGunner
   m_TagString: Untagged
@@ -1042,19 +1042,6 @@ MonoBehaviour:
   sensitivityY: 120
   cam: {fileID: 0}
   orientation: {fileID: 0}
---- !u!114 &4550369816469345288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7169190364709667624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b82d88fd80f6dd84ca0d73ece1d1cbf2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tankData: {fileID: 11400000, guid: 8fa3baf5f770efd45898d3fad002c769, type: 2}
 --- !u!195 &7173662897559497344
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1141,6 +1128,19 @@ MonoBehaviour:
   backLeft: {fileID: 5685518717564840083}
   showDebug: 0
   debugLineLength: 1
+--- !u!114 &5811772627741673921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169190364709667624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eec8273e4f76194ca583a05105693c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tankData: {fileID: 11400000, guid: 8fa3baf5f770efd45898d3fad002c769, type: 2}
 --- !u!1 &7614209386966035133
 GameObject:
   m_ObjectHideFlags: 0
