@@ -18,20 +18,14 @@ public class VehicleMovement : MonoBehaviour
     [SerializeField] Transform backLeftMesh;
 
     [Header("Movement")]
-    public float acceleration = 3f;
+    public float acceleration = 2.5f;
     public float brakingForce = 3f;
-    public float turnSpeed = 4f;
-    public float accelerationWhileTurning = 5f;
+    public float maxSteerAngle = 20f;
+    public float accelerationWhileTurning = 3f;
 
     private float currAcceleration;
     private float currBrakeForce;
     private float turnInput;
-
-    private float smoothTorqueFrontRight;
-    private float smoothTorqueFrontLeft;
-    private float smoothTorqueBackRight;
-    private float smoothTorqueBackLeft;
-
     void Awake()
     {
     }
@@ -60,6 +54,7 @@ public class VehicleMovement : MonoBehaviour
         Accelerate(acceleration);
         Brake();
         Turn(turnInput);
+        
 
         //Update Wheel Meshes
         UpdateWheel(frontRight, frontRightMesh);
@@ -87,18 +82,11 @@ public class VehicleMovement : MonoBehaviour
     void Turn(float turnInput)
     {
         if(turnInput != 0){
-            float differentialTorque = turnInput * turnSpeed;
-
-            // Smoothly apply torque
-            smoothTorqueFrontRight = Mathf.Lerp(smoothTorqueFrontRight, -differentialTorque, Time.deltaTime * 10f);
-            smoothTorqueFrontLeft = Mathf.Lerp(smoothTorqueFrontLeft, differentialTorque, Time.deltaTime * 10f);
-            smoothTorqueBackRight = Mathf.Lerp(smoothTorqueBackRight, -differentialTorque, Time.deltaTime * 10f);
-            smoothTorqueBackLeft = Mathf.Lerp(smoothTorqueBackLeft, differentialTorque, Time.deltaTime * 10f);
-
-            frontRight.motorTorque += smoothTorqueFrontRight;
-            frontLeft.motorTorque += smoothTorqueFrontLeft;
-            backRight.motorTorque += smoothTorqueBackRight;
-            backLeft.motorTorque += smoothTorqueBackLeft;
+            float steeringAngle = maxSteerAngle * turnInput;
+            frontLeft.steerAngle = Mathf.Lerp(frontLeft.steerAngle, steeringAngle, Time.deltaTime*5f);
+            frontRight.steerAngle = Mathf.Lerp(frontRight.steerAngle, steeringAngle, Time.deltaTime*5f);
+            backLeft.steerAngle = -Mathf.Lerp(backLeft.steerAngle, steeringAngle, Time.deltaTime*5f);
+            backRight.steerAngle = -Mathf.Lerp(backRight.steerAngle, steeringAngle, Time.deltaTime*5f);
 
 
             // if(currAcceleration < 0.5){
@@ -109,6 +97,11 @@ public class VehicleMovement : MonoBehaviour
             //     frontLeft.motorTorque = turnInput * accelerationWhileTurning; backLeft.motorTorque = turnInput * accelerationWhileTurning;
             // }
             
+        }else{
+            frontLeft.steerAngle = 0;
+            frontRight.steerAngle = 0;
+            backLeft.steerAngle = 0;
+            backRight.steerAngle = 0;
         }
     }
 

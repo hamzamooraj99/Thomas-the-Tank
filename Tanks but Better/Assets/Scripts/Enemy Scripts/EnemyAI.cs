@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,12 +7,12 @@ public class EnemyAI : MonoBehaviour
     [Header("Movement")]
     public Transform target;
     public float moveSpeed = 2f;
-    public float turnSpeed = 2f;
+    public float maxSteerAngle = 20f;
     public float accelerationWhileTurning = 2f;
     public float brakeForce = 2f;
 
     [Header("Path Following")]
-    public float lookAheadDistance = 2f;
+    public float lookAheadDistance = 3f;
     public float stoppingDistance = 10f;
 
     [Header("Speed Adjustment")]
@@ -35,7 +36,7 @@ public class EnemyAI : MonoBehaviour
     [Header("Patrolling")]
     [SerializeField] public Transform patrolAreaCenter;
     [SerializeField] public float patrolAreaRadius = 10f;
-    [SerializeField] public float minPatrolDistance = 5f;
+    [SerializeField] public float minPatrolDistance = 2f;
     [HideInInspector] public Transform[] waypoints;
     private int currentWaypoint;
 
@@ -57,20 +58,25 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] Transform backLeftMesh;
 
     private NavMeshAgent agent;
+    private EnemyTankInfo tankInfo;
+    private EnemyTankShoot tankShoot;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         agent.updatePosition = false;
-        agent.updateRotation = false;
+        agent.updateRotation = true;
         agent.speed = moveSpeed;
-        agent.angularSpeed = turnSpeed*100;
+        agent.angularSpeed = 2f;
         agent.acceleration = 50f;
         agent.stoppingDistance = stoppingDistance;
         agent.autoBraking = true;
         // agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
 
         agent.SetDestination(GetRandomWaypoint());
+
+        tankInfo = GetComponent<EnemyTankInfo>();
+        tankShoot = GetComponentInChildren<EnemyTankShoot>();
     }
 
     void FixedUpdate()
@@ -80,7 +86,12 @@ public class EnemyAI : MonoBehaviour
                 agent.SetDestination(target.position);
                 Move();
                 TowerMovement("attack");
-            }else{
+                tankShoot.Shoot();
+            }else if(tankInfo.GetBattery() < 50){
+                Retreat();
+                TowerMovement("attack");
+            }
+            else{
                 Patrol();
                 TowerMovement("scan");
             }
@@ -101,8 +112,14 @@ public class EnemyAI : MonoBehaviour
         float avoidanceTurn = AvoidObstacles();
         if(avoidanceTurn != 0)
             turnAmount += avoidanceTurn;
-        
-        ApplyMovement(forwardAmount * adjustedSpeed, turnAmount * turnSpeed);
+
+        if (agent.desiredVelocity.sqrMagnitude > 0.1f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(agent.desiredVelocity.normalized);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 2f * Time.deltaTime);
+        }
+
+        ApplyMovement(forwardAmount * adjustedSpeed, turnAmount * 2f);
         agent.nextPosition = transform.position;
     }
 
@@ -130,8 +147,8 @@ public class EnemyAI : MonoBehaviour
 
         void Accelerate(float acceleration)
         {
-            frontRight.motorTorque = acceleration;
-            frontLeft.motorTorque = acceleration;
+            // frontRight.motorTorque = acceleration;
+            // frontLeft.motorTorque = acceleration;
             backRight.motorTorque = acceleration;
             backLeft.motorTorque = acceleration;
 
@@ -145,12 +162,26 @@ public class EnemyAI : MonoBehaviour
         void Turn(float turnInput)
         {
             if(turnInput != 0){
-                float differentialTorque = turnInput * turnSpeed;
+                float steeringAngle = maxSteerAngle * turnInput;
+                frontLeft.steerAngle = Mathf.Lerp(frontLeft.steerAngle, steeringAngle, Time.deltaTime*5f);
+                frontRight.steerAngle = Mathf.Lerp(frontRight.steerAngle, steeringAngle, Time.deltaTime*5f);
+                backLeft.steerAngle = -Mathf.Lerp(backLeft.steerAngle, steeringAngle, Time.deltaTime*5f);
+                backRight.steerAngle = -Mathf.Lerp(backRight.steerAngle, steeringAngle, Time.deltaTime*5f);
 
-                frontRight.motorTorque -= differentialTorque;
-                frontLeft.motorTorque += differentialTorque;
-                backRight.motorTorque -= differentialTorque;
-                backLeft.motorTorque += differentialTorque;
+
+                // if(currAcceleration < 0.5){
+                //     frontRight.motorTorque = -turnInput * turnSpeed; backRight.motorTorque = -turnInput * turnSpeed;
+                //     frontLeft.motorTorque = turnInput * turnSpeed; backLeft.motorTorque = turnInput * turnSpeed;
+                // } else {
+                //     frontRight.motorTorque = -turnInput * accelerationWhileTurning; backRight.motorTorque = -turnInput * accelerationWhileTurning;
+                //     frontLeft.motorTorque = turnInput * accelerationWhileTurning; backLeft.motorTorque = turnInput * accelerationWhileTurning;
+                // }
+                
+            }else{
+                frontLeft.steerAngle = Mathf.Lerp(frontLeft.steerAngle, 0, Time.deltaTime * 5f);
+                frontRight.steerAngle = Mathf.Lerp(frontRight.steerAngle, 0, Time.deltaTime * 5f);
+                backLeft.steerAngle = Mathf.Lerp(backLeft.steerAngle, 0, Time.deltaTime * 5f);
+                backRight.steerAngle = Mathf.Lerp(backRight.steerAngle, 0, Time.deltaTime * 5f);
             }
         }
 
@@ -224,7 +255,7 @@ public class EnemyAI : MonoBehaviour
         float avoidanceTurn = 0f;
 
         if(SphereCast(transform.forward, avoidanceDistance))
-            avoidanceTurn = Mathf.Sign(Vector3.Dot(transform.right, transform.forward)) * avoidanceForce;
+            avoidanceTurn = -Mathf.Sign(Vector3.Dot(transform.right, transform.forward)) * avoidanceForce;
         else if(SphereCast(transform.forward+transform.right*0.5f, avoidanceDistance))
             avoidanceTurn = -avoidanceForce;
         else if(SphereCast(transform.forward-transform.right*0.5f, avoidanceDistance))
@@ -250,7 +281,7 @@ public class EnemyAI : MonoBehaviour
         if(target == null) return false;
 
         Vector3 directionToTarget = (target.position - transform.position).normalized;
-        float angleToTarget = Vector3.Angle(transform.forward, directionToTarget);
+        float angleToTarget = Vector3.Angle(tankTower.transform.forward, directionToTarget);
 
         if(angleToTarget < fovAngle/2f){
             float distanceToTarget = Vector3.Distance(transform.position, target.position);
@@ -263,6 +294,28 @@ public class EnemyAI : MonoBehaviour
             }
         }
         return false;
+    }
+
+    void Retreat()
+    {
+        Debug.Log("RETREAT");
+        Transform healthItem = FindNearestHealthItem();
+        Debug.Log($"Looking for {healthItem.name}");
+        if(healthItem != null){
+            agent.SetDestination(healthItem.position);
+            agent.stoppingDistance = 0f;
+        }
+        Move();
+        agent.stoppingDistance = stoppingDistance;
+
+        Transform FindNearestHealthItem()
+        {
+            GameObject[] healthItems = GameObject.FindGameObjectsWithTag("HealthItem");
+            return healthItems
+                .Select(item => item.transform)
+                .OrderBy(item => Vector3.Distance(transform.position, item.position))
+                .FirstOrDefault();
+        }
     }
 
     void Patrol()
@@ -305,8 +358,8 @@ public class EnemyAI : MonoBehaviour
         float halfFOV = fovAngle / 2f;
         Quaternion leftRayRotation = Quaternion.AngleAxis(-halfFOV, Vector3.up);
         Quaternion rightRayRotation = Quaternion.AngleAxis(halfFOV, Vector3.up);
-        Vector3 leftRayDirection = leftRayRotation * transform.forward;
-        Vector3 rightRayDirection = rightRayRotation * transform.forward;
+        Vector3 leftRayDirection = leftRayRotation * tankTower.transform.forward;
+        Vector3 rightRayDirection = rightRayRotation * tankTower.transform.forward;
 
         Gizmos.DrawRay(transform.position, leftRayDirection * fovRange);
         Gizmos.DrawRay(transform.position, rightRayDirection * fovRange);

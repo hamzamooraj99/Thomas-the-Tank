@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 2384722963706876724}
   - component: {fileID: 2016732981969767004}
   - component: {fileID: 2666325685551102002}
-  m_Layer: 12
+  m_Layer: 13
   m_Name: Battery Black
-  m_TagString: Collectable
+  m_TagString: HealthItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cde5838816d1b174dabfc0b8c411fb8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  restorationAmount: 5
+  restorationAmount: 10
 --- !u!65 &2666325685551102002
 BoxCollider:
   m_ObjectHideFlags: 0
