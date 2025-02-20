@@ -29,12 +29,12 @@ public class PlayerTankInfo : MonoBehaviour
     private bool isFlashing = false;
     private Coroutine flashRoutine;
 
-    private WeaponData weapon;
+    [HideInInspector] public WeaponData weapon;
+    [HideInInspector] public int maxAmmo;
 
     #region Getters
     public string GetName() => tankName;
     public int GetBattery() => currBattery;
-    public WeaponData GetWeapon() => weapon;
     public bool GetPlayableFlag() => isPlayable;
     public bool GetFriendlyFlag() => isFriendly;
     #endregion
@@ -62,9 +62,10 @@ public class PlayerTankInfo : MonoBehaviour
         tankData = Instantiate(tankData);
         tankName = tankData.name;
         currBattery = tankData.battery;
-        weapon = tankData.weapon;
+        weapon = Instantiate(tankData.weapon);
         isPlayable = tankData.playable;
         isFriendly = tankData.friendly;
+        maxAmmo = weapon.totalAmmo;
 
         if(batteryBar) batteryBar.maxValue = tankData.battery;
         UpdateHealthUI();
@@ -81,6 +82,12 @@ public class PlayerTankInfo : MonoBehaviour
             Debug.Log($"{tankData.name} destroyed");
         }
 
+        UpdateHealthUI();
+    }
+
+    public void RestoreBattery(int restoration)
+    {
+        currBattery = Mathf.Min(currBattery + restoration, 1000);
         UpdateHealthUI();
     }
 

@@ -14,12 +14,12 @@ public class EnemyTankInfo : MonoBehaviour
     private int currBattery;
     private bool isPlayable;
 
-    private WeaponData weapon;
+    [HideInInspector] public WeaponData weapon;
+    [HideInInspector] public int maxAmmo;
 
     #region Getters
     public string GetName() => tankName;
     public int GetBattery() => currBattery;
-    public WeaponData GetWeapon() => weapon;
     public bool GetPlayableFlag() => isPlayable;
     #endregion
 
@@ -37,7 +37,8 @@ public class EnemyTankInfo : MonoBehaviour
         tankData = Instantiate(tankData);
         tankName = tankData.name;
         currBattery = tankData.battery;
-        weapon = tankData.weapon;
+        weapon = Instantiate(tankData.weapon);
+        maxAmmo = weapon.totalAmmo;
         isPlayable = tankData.playable;
     }
 
@@ -48,5 +49,10 @@ public class EnemyTankInfo : MonoBehaviour
             Destroy(gameObject);
             Debug.Log($"{tankData.name} destroyed");
         }
+    }
+
+    public void RestoreBattery(int restoration)
+    {
+        currBattery = Mathf.Min(currBattery + restoration, 100);
     }
 }
