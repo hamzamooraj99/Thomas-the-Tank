@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -60,6 +61,9 @@ public class EnemyAI : MonoBehaviour
     private NavMeshAgent agent;
     private EnemyTankInfo tankInfo;
     private EnemyTankShoot tankShoot;
+    private bool targetEscaped = false;
+    private bool wasInFOV = false;
+    private float searchTimer = 0f;
 
     void Start()
     {
@@ -83,15 +87,24 @@ public class EnemyAI : MonoBehaviour
     {
         if(target != null){
             if(isPlayerInFOV()){
+                Debug.Log("PLAYER IN FOV");
+                targetEscaped = false;
+                wasInFOV = true;
+
                 agent.SetDestination(target.position);
                 Move();
                 TowerMovement("attack");
                 tankShoot.Shoot();
+            }else if(wasInFOV && targetEscaped){
+                Debug.Log("SEARCHING");
+                SearchForTarget();
             }else if(tankInfo.GetBattery() < 50){
+                Debug.Log("RETREAT");
                 Retreat();
                 TowerMovement("attack");
             }
             else{
+                Debug.Log("PATROL");
                 Patrol();
                 TowerMovement("scan");
             }
@@ -293,6 +306,10 @@ public class EnemyAI : MonoBehaviour
                 }
             }
         }
+
+        if(!targetEscaped && wasInFOV){
+            targetEscaped = true;
+        }
         return false;
     }
 
@@ -320,7 +337,8 @@ public class EnemyAI : MonoBehaviour
 
     void Patrol()
     {
-        if(Vector3.Distance(transform.position, agent.destination) < 1f)
+        Debug.Log("PATROL");
+        if(Vector3.Distance(transform.position, agent.destination) < 2f)
             agent.SetDestination(GetRandomWaypoint());
             Move();
     }
@@ -351,6 +369,23 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    void SearchForTarget()
+    {
+        float searchTimeLimit = 5f;
+        searchTimer += Time.deltaTime;
+
+        if(searchTimer >= searchTimeLimit){
+            targetEscaped = false;
+            wasInFOV = false;
+            searchTimer = 0f;
+            Patrol();
+        }else{
+            agent.SetDestination(target.position);
+            Move();
+            Debug.Log($"SEARCH: {searchTimer} / {searchTimeLimit}");
+        }
+    }
+
     void OnDrawGizmos()
     {
         // Draw FOV cone
@@ -364,5 +399,15 @@ public class EnemyAI : MonoBehaviour
         Gizmos.DrawRay(transform.position, leftRayDirection * fovRange);
         Gizmos.DrawRay(transform.position, rightRayDirection * fovRange);
     }
+
+    // void Move()
+
+    // void ApplyMovement(float acceleration, float turnInput)
+
+    // Vector3 GetLookAheadPoint(float distance)
+
+    // float GetAdjustedSpeed(float baseSpeed)
+
+    // float AvoidObstacles()
 
 }
