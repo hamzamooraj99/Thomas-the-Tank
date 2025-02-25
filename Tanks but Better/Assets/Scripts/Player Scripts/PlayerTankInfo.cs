@@ -54,7 +54,7 @@ public class PlayerTankInfo : MonoBehaviour
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.K) && debug){
-            TakeDamage(10);
+            TakeDamage(100);
             Debug.Log($"Battery reduced to {currBattery}");
         }
     }
@@ -85,11 +85,17 @@ public class PlayerTankInfo : MonoBehaviour
             vignetteManager.FlashVignette();
             
         if(currBattery <= 0){
-            Destroy(gameObject);
+            PlayerDied();
             Debug.Log($"{tankData.name} destroyed");
         }
 
         UpdateHealthUI();
+    }
+
+    private void PlayerDied()
+    {
+        LevelManager.instance.GameOver();
+        gameObject.SetActive(false);
     }
 
     public void RestoreBattery(int restoration)
