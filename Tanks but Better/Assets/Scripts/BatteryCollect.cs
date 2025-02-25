@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class BatteryCollect : MonoBehaviour
@@ -14,6 +15,7 @@ public class BatteryCollect : MonoBehaviour
             if(pTankInfo.GetBattery() < 1000){
                 pTankInfo.RestoreBattery(restorationAmount * 10);
                 gameObject.SetActive(false);
+                CollectableManager.instance.Respawn(ammo:null, battery:this, delay:30f);
             }
         }
         else if (collider.TryGetComponent(out EnemyTankInfo eTankInfo))
@@ -21,6 +23,7 @@ public class BatteryCollect : MonoBehaviour
             if(eTankInfo.GetBattery() < 100){
                 eTankInfo.RestoreBattery(restorationAmount);
                 gameObject.SetActive(false);
+                CollectableManager.instance.Respawn(ammo:null, battery:this, delay:30f);
             }
         }
     }

@@ -14,6 +14,7 @@ public class EnemyTankInfo : MonoBehaviour
     private int currBattery;
     private int maxBattery;
     private bool isPlayable;
+    private EnemyAI tankAI;
 
     [Header("Enemy UI References")]
     [SerializeField] Slider healthBar;
@@ -41,35 +42,12 @@ public class EnemyTankInfo : MonoBehaviour
     {
         InitialiseTank();
 
-        if (healthBar == null)
-        {
-            Canvas canvas = GetComponentInChildren<Canvas>();
-            if (canvas == null)
-            {
-                Debug.LogError($"{gameObject.name}: No Canvas found!");
-            }
-            else
-            {
-                healthBar = canvas.GetComponentInChildren<Slider>();
-                if (healthBar == null)
-                {
-                    Debug.LogError($"{gameObject.name}: Canvas found, but no Slider found!");
-                }
-            }
-        }
-
-        if (healthBar == null)
-            Debug.LogError($"{gameObject.name}: No Health Bar in Awake");
-        else
-            Debug.Log($"{gameObject.name}: Health Bar in Awake");
+        Canvas canvas = GetComponentInChildren<Canvas>();
+        healthBar = canvas.GetComponentInChildren<Slider>();
     }
 
     void Start()
     {
-        if(healthBar == null)
-            Debug.Log("No Health Bar in Start");
-        else
-            Debug.Log("Health Bar in Start");
         UpdateHealthBar(currBattery);    
     }
 
@@ -89,6 +67,7 @@ public class EnemyTankInfo : MonoBehaviour
         maxAmmo = weapon.totalAmmo;
         isPlayable = tankData.playable;
         // Debug.Log($"{currBattery} battery left");
+        tankAI = GetComponent<EnemyAI>();
     }
 
     public void TakeDamage(int damage)
@@ -97,7 +76,8 @@ public class EnemyTankInfo : MonoBehaviour
         UpdateHealthBar(currBattery);
         // Debug.Log($"Tank taken {damage} damage. Current Battery = {currBattery}");
         if(currBattery <= 0){
-            Destroy(gameObject);
+            KillCounterManager.instance.AddKill();
+            tankAI.Explode();
             Debug.Log($"{tankData.name} destroyed");
         }
         onDamageTaken?.Invoke();

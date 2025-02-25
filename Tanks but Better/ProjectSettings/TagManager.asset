@@ -7,6 +7,8 @@ TagManager:
   - Enemy
   - Collectable
   - HealthItem
+  - Damage
+  - EnemySoldiers
   layers:
   - Default
   - TransparentFX

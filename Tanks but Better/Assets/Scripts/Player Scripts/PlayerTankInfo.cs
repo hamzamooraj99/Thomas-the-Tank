@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class PlayerTankInfo : MonoBehaviour
 {
     [SerializeField] TankData tankData;
+    public GameObject tank;
 
     [Header("UI References")]
     [SerializeField] Slider batteryBar;
@@ -28,6 +29,7 @@ public class PlayerTankInfo : MonoBehaviour
     private bool isFriendly;
     private bool isFlashing = false;
     private Coroutine flashRoutine;
+    private VignetteManager vignetteManager;
 
     [HideInInspector] public WeaponData weapon;
     [HideInInspector] public int maxAmmo;
@@ -52,7 +54,7 @@ public class PlayerTankInfo : MonoBehaviour
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.K) && debug){
-            TakeDamage(10);
+            TakeDamage(100);
             Debug.Log($"Battery reduced to {currBattery}");
         }
     }
@@ -70,6 +72,11 @@ public class PlayerTankInfo : MonoBehaviour
         if(batteryBar) batteryBar.maxValue = tankData.battery;
         UpdateHealthUI();
 
+        vignetteManager = FindFirstObjectByType<VignetteManager>();
+        
+        transform.position = SpawnPointManager.spawnPosition;
+        transform.rotation = SpawnPointManager.spawnRotation;
+
         // string play = isPlayabale ? "playable" : "not playable";
         // Debug.Log($"Tank {tankData.name} initialised with {currArmour} armour, {currBattery} battery and a {weapon.name}. The character is {play}");
     }
@@ -77,12 +84,21 @@ public class PlayerTankInfo : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currBattery -= damage;
+        if(vignetteManager != null)
+            vignetteManager.FlashVignette();
+            
         if(currBattery <= 0){
-            Destroy(gameObject);
+            PlayerDied();
             Debug.Log($"{tankData.name} destroyed");
         }
 
         UpdateHealthUI();
+    }
+
+    public void PlayerDied()
+    {
+        LevelManager.instance.GameOver();
+        gameObject.SetActive(false);
     }
 
     public void RestoreBattery(int restoration)
