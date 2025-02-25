@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class PlayerTankInfo : MonoBehaviour
 {
     [SerializeField] TankData tankData;
+    public GameObject tank;
 
     [Header("UI References")]
     [SerializeField] Slider batteryBar;
