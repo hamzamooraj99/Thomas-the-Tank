@@ -97,6 +97,7 @@ public class EnemyTankInfo : MonoBehaviour
         UpdateHealthBar(currBattery);
         // Debug.Log($"Tank taken {damage} damage. Current Battery = {currBattery}");
         if(currBattery <= 0){
+            KillCounterManager.instance.AddKill();
             Destroy(gameObject);
             Debug.Log($"{tankData.name} destroyed");
         }

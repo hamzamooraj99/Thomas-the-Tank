@@ -28,6 +28,7 @@ public class PlayerTankInfo : MonoBehaviour
     private bool isFriendly;
     private bool isFlashing = false;
     private Coroutine flashRoutine;
+    private VignetteManager vignetteManager;
 
     [HideInInspector] public WeaponData weapon;
     [HideInInspector] public int maxAmmo;
@@ -70,6 +71,8 @@ public class PlayerTankInfo : MonoBehaviour
         if(batteryBar) batteryBar.maxValue = tankData.battery;
         UpdateHealthUI();
 
+        vignetteManager = FindFirstObjectByType<VignetteManager>();
+
         // string play = isPlayabale ? "playable" : "not playable";
         // Debug.Log($"Tank {tankData.name} initialised with {currArmour} armour, {currBattery} battery and a {weapon.name}. The character is {play}");
     }
@@ -77,6 +80,9 @@ public class PlayerTankInfo : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currBattery -= damage;
+        if(vignetteManager != null)
+            vignetteManager.FlashVignette();
+            
         if(currBattery <= 0){
             Destroy(gameObject);
             Debug.Log($"{tankData.name} destroyed");

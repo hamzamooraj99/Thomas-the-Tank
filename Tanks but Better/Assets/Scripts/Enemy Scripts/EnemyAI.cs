@@ -295,7 +295,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    bool isPlayerInFOV()
+    public bool isPlayerInFOV()
     {
         if(target == null) return false;
 
