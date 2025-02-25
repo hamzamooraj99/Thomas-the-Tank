@@ -725,7 +725,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3997032915412801134}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db8f93b465cd5554aa31c7d7bee6e298, type: 3}
   m_Name: 
@@ -1425,8 +1425,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   fovAngle: 90
-  fovRange: 20
-  towerRotationSpeed: 0.5
+  fovRange: 40
+  proximityRadius: 15
+  towerRotationSpeed: 5
   towerScanSpeed: 0.5
   patrolTowerScanAngle: 90
   patrolAreaCenter: {fileID: 7333165713195971796}
