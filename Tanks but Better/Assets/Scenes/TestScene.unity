@@ -17557,6 +17557,21 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 451085850}
+    - target: {fileID: 5143680034165056852, guid: 2a94f858fa24e4f47afec1aa29bba38e,
+        type: 3}
+      propertyPath: fovRange
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 5143680034165056852, guid: 2a94f858fa24e4f47afec1aa29bba38e,
+        type: 3}
+      propertyPath: proximityRadius
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5143680034165056852, guid: 2a94f858fa24e4f47afec1aa29bba38e,
+        type: 3}
+      propertyPath: towerRotationSpeed
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5450886284984987034, guid: 2a94f858fa24e4f47afec1aa29bba38e,
         type: 3}
       propertyPath: m_Enabled

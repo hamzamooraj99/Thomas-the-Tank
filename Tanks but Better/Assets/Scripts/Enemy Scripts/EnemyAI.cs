@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -27,10 +28,13 @@ public class EnemyAI : MonoBehaviour
 
     [Header("Field of View (FOV)")]
     public float fovAngle = 90f;
-    public float fovRange = 20f;
+    public float fovRange = 40f;
+
+    [Header("Proximity Detection")]
+    public float proximityRadius = 15f;
 
     [Header("Tower Movement")]
-    public float towerRotationSpeed = 0.5f;
+    public float towerRotationSpeed = 2f;
     public float towerScanSpeed = 0.5f;
     public float patrolTowerScanAngle = 90f;
 
@@ -64,6 +68,7 @@ public class EnemyAI : MonoBehaviour
     private bool targetEscaped = false;
     private bool wasInFOV = false;
     private float searchTimer = 0f;
+    private bool shot = false;
 
     void Start()
     {
@@ -81,13 +86,14 @@ public class EnemyAI : MonoBehaviour
 
         tankInfo = GetComponent<EnemyTankInfo>();
         tankShoot = GetComponentInChildren<EnemyTankShoot>();
+
+        tankInfo.onDamageTaken += isShot;
     }
 
     void FixedUpdate()
     {
         if(target != null){
-            if(isPlayerInFOV()){
-                Debug.Log("PLAYER IN FOV");
+            if(isPlayerInFOV() || isPlayerInProximity()){
                 targetEscaped = false;
                 wasInFOV = true;
 
@@ -95,7 +101,7 @@ public class EnemyAI : MonoBehaviour
                 Move();
                 TowerMovement("attack");
                 tankShoot.Shoot();
-            }else if(wasInFOV && targetEscaped){
+            }else if(((wasInFOV && targetEscaped) || shot) && tankInfo.GetBattery() >= 50){
                 Debug.Log("SEARCHING");
                 SearchForTarget();
             }else if(tankInfo.GetBattery() < 50){
@@ -301,8 +307,10 @@ public class EnemyAI : MonoBehaviour
             if(distanceToTarget <= fovRange){
                 RaycastHit hit;
                 if(Physics.Raycast(transform.position, directionToTarget, out hit, fovRange)){
-                    if(hit.transform == target)
+                    if(hit.transform == target){
+                        Debug.Log("PLAYER IN FOV");
                         return true;
+                    }
                 }
             }
         }
@@ -311,6 +319,28 @@ public class EnemyAI : MonoBehaviour
             targetEscaped = true;
         }
         return false;
+    }
+
+    bool isPlayerInProximity()
+    {
+        if(target == null) return false;
+
+        float distanceToTarget = Vector3.Distance(transform.position, target.position);
+        if(distanceToTarget < proximityRadius){
+            Debug.Log("PLAYER IN PROXIMITY");
+            return true;
+        }
+
+        if(!targetEscaped && wasInFOV){
+            targetEscaped = true;
+        }
+        return false;
+    }
+    
+    void isShot()
+    {
+        Debug.Log("ENEMY SHOT... SEARCHING FOR TARGET");
+        shot = true;
     }
 
     void Retreat()
@@ -358,7 +388,7 @@ public class EnemyAI : MonoBehaviour
     void TowerMovement(string action)
     {
         if(action == "attack"){
-            Vector3 directionToTarget = (target.position - tankTower.transform.position).normalized;
+            Vector3 directionToTarget = ((target.position + new Vector3(0f, 0.5f, 0f)) - tankTower.transform.position).normalized;
             Quaternion targetRotation = Quaternion.LookRotation(directionToTarget, tankBody.transform.up);
             tankTower.transform.rotation = Quaternion.Slerp(tankTower.transform.rotation, targetRotation, Time.deltaTime*towerRotationSpeed);
         }else if(action == "scan"){
@@ -377,6 +407,7 @@ public class EnemyAI : MonoBehaviour
         if(searchTimer >= searchTimeLimit){
             targetEscaped = false;
             wasInFOV = false;
+            shot = false;
             searchTimer = 0f;
             Patrol();
         }else{
@@ -398,6 +429,14 @@ public class EnemyAI : MonoBehaviour
 
         Gizmos.DrawRay(transform.position, leftRayDirection * fovRange);
         Gizmos.DrawRay(transform.position, rightRayDirection * fovRange);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, proximityRadius);
+    }
+
+    void OnDestroy()
+    {
+        tankInfo.onDamageTaken -= isShot;
     }
 
     // void Move()

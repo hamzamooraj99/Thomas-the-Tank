@@ -24,6 +24,9 @@ public class EnemyTankInfo : MonoBehaviour
     [HideInInspector] public WeaponData weapon;
     [HideInInspector] public int maxAmmo;
 
+    public delegate void DamageTakenHandler();
+    public event DamageTakenHandler onDamageTaken;
+
     #region Getters
     public string GetName() => tankName;
     public int GetBattery() => currBattery;
@@ -97,6 +100,7 @@ public class EnemyTankInfo : MonoBehaviour
             Destroy(gameObject);
             Debug.Log($"{tankData.name} destroyed");
         }
+        onDamageTaken?.Invoke();
     }
 
     public void RestoreBattery(int restoration)

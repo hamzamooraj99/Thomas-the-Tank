@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Cannon
   damage: 40
-  shootForce: 5
+  shootForce: 15
   upwardForce: 0
   currentAmmo: 0
   magSize: 1

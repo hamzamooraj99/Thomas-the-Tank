@@ -39,7 +39,7 @@ public class PlayerLook : MonoBehaviour
         xRot -= mouseY * sensitivityY * multiplier;
         yRot += mouseX * sensitivityX * multiplier;
 
-        xRot = Mathf.Clamp(xRot, -15f, 5f);
+        xRot = Mathf.Clamp(xRot, -10f, 10f);
         tankTower.transform.rotation = tankBody.transform.rotation * Quaternion.Euler(0f, yRot, 0f);
         tankCannon.transform.localRotation = Quaternion.Euler(xRot, 0f, 0f);
 
