@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.AI;
@@ -62,6 +64,11 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] Transform backRightMesh;
     [SerializeField] Transform backLeftMesh;
 
+    [Header("Explosion Params")]
+    [SerializeField] public float explosionForce = 20f;
+    [SerializeField] public float explosionRadius = 5f;
+    [SerializeField] public float destructionDelay = 2f;
+
     private NavMeshAgent agent;
     private EnemyTankInfo tankInfo;
     private EnemyTankShoot tankShoot;
@@ -69,6 +76,8 @@ public class EnemyAI : MonoBehaviour
     private bool wasInFOV = false;
     private float searchTimer = 0f;
     private bool shot = false;
+    private Rigidbody mainRB;
+    private List<Transform> tankParts;
 
     void Start()
     {
@@ -88,6 +97,12 @@ public class EnemyAI : MonoBehaviour
         tankShoot = GetComponentInChildren<EnemyTankShoot>();
 
         tankInfo.onDamageTaken += isShot;
+
+        mainRB = GetComponent<Rigidbody>();
+        tankParts = new List<Transform>
+        {
+            tankBody.transform, tankTower.transform, tankCannon.transform, frontLeftMesh, frontRightMesh, backLeftMesh, backRightMesh
+        };
     }
 
     void FixedUpdate()
@@ -434,19 +449,50 @@ public class EnemyAI : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, proximityRadius);
     }
 
-    void OnDestroy()
+    void OnDestroy() => tankInfo.onDamageTaken -= isShot;
+
+    public void Explode()
     {
-        tankInfo.onDamageTaken -= isShot;
+        if(mainRB){
+            mainRB.isKinematic = true;
+            mainRB.detectCollisions = false;
+        }
+
+        List<WheelCollider> wheelColliders = new List<WheelCollider>
+        {
+            frontRight, frontLeft, backRight, backLeft
+        };
+        foreach(WheelCollider col in wheelColliders){
+            Destroy(col);
+        }
+
+        List<Transform> tankParts = new List<Transform>
+        {
+            tankBody.transform, tankTower.transform, tankCannon.transform, frontLeftMesh, frontRightMesh, backLeftMesh, backRightMesh
+        };
+
+        foreach(Transform part in tankParts){
+            part.SetParent(null);
+
+            Rigidbody rb = part.gameObject.AddComponent<Rigidbody>();
+            rb.mass = 1f;
+            rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 1f, ForceMode.Impulse);
+            
+            if(part.name.ToLower().Contains("mesh"))
+                part.gameObject.AddComponent<SphereCollider>();
+        }
+
+        StartCoroutine(DestroyTank());
     }
 
-    // void Move()
+    private IEnumerator DestroyTank()
+    {
+        yield return new WaitForSeconds(destructionDelay);
 
-    // void ApplyMovement(float acceleration, float turnInput)
+        foreach(Transform part in tankParts){
+            Destroy(part.gameObject);
+        }
 
-    // Vector3 GetLookAheadPoint(float distance)
-
-    // float GetAdjustedSpeed(float baseSpeed)
-
-    // float AvoidObstacles()
-
+        Destroy(gameObject);
+    }
 }

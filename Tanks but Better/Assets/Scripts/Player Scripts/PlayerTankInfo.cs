@@ -73,6 +73,9 @@ public class PlayerTankInfo : MonoBehaviour
         UpdateHealthUI();
 
         vignetteManager = FindFirstObjectByType<VignetteManager>();
+        
+        transform.position = SpawnPointManager.spawnPosition;
+        transform.rotation = SpawnPointManager.spawnRotation;
 
         // string play = isPlayabale ? "playable" : "not playable";
         // Debug.Log($"Tank {tankData.name} initialised with {currArmour} armour, {currBattery} battery and a {weapon.name}. The character is {play}");
@@ -92,7 +95,7 @@ public class PlayerTankInfo : MonoBehaviour
         UpdateHealthUI();
     }
 
-    private void PlayerDied()
+    public void PlayerDied()
     {
         LevelManager.instance.GameOver();
         gameObject.SetActive(false);

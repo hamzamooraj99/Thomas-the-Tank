@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 785533762432718388}
   - component: {fileID: 1869255087623561878}
   - component: {fileID: 614928607736466460}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: AmmoCrate
-  m_TagString: Untagged
+  m_TagString: Collectable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 2159188701427204635}
   serializedVersion: 2
   m_LocalRotation: {x: -0.19611512, y: -0.09367483, z: -0.255326, w: 0.94211066}
-  m_LocalPosition: {x: -19.115799, y: 1.84, z: 3.226}
+  m_LocalPosition: {x: -8.8, y: 1.84, z: 17.9}
   m_LocalScale: {x: 0.001, y: 0.0010000002, z: 0.0010000002}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3005,7 +3005,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 12
+  m_VersionIndex: 15
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class AmmoCollect : MonoBehaviour
@@ -14,6 +15,7 @@ public class AmmoCollect : MonoBehaviour
                 pTankInfo.weapon.totalAmmo = Mathf.Min(totalAmmo + restorationAmount, pTankInfo.maxAmmo);
                 pTankInfo.weapon.currentAmmo = Mathf.Min(pTankInfo.weapon.currentAmmo + restorationAmount, pTankInfo.weapon.magSize);
                 gameObject.SetActive(false);
+                CollectableManager.instance.Respawn(ammo:this, battery:null, delay:30f);
                 TankShoot tankShoot = pTankInfo.GetComponentInChildren<TankShoot>();
                 if(tankShoot != null)
                     tankShoot.AmmoUI("collect");
@@ -27,6 +29,7 @@ public class AmmoCollect : MonoBehaviour
                 eTankInfo.weapon.totalAmmo = Mathf.Min(totalAmmo + restorationAmount, eTankInfo.maxAmmo);
                 eTankInfo.weapon.currentAmmo = Mathf.Min(eTankInfo.weapon.currentAmmo + restorationAmount, eTankInfo.weapon.magSize);
                 gameObject.SetActive(false);
+                CollectableManager.instance.Respawn(ammo:this, battery:null, delay:30f);
             }
         }
     }

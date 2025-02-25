@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2384722963706876724}
   - component: {fileID: 2016732981969767004}
   - component: {fileID: 2666325685551102002}
+  - component: {fileID: 8088203794497703981}
   m_Layer: 13
   m_Name: Battery Black
   m_TagString: HealthItem
@@ -120,5 +121,18 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.11157316, y: 0.19910346, z: 0.11157316}
+  m_Size: {x: 0.18, y: 0.19910346, z: 0.19}
   m_Center: {x: 0.00000023655593, y: 0, z: 0}
+--- !u!114 &8088203794497703981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6235255055951394565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f62369aded3aad45be38c7039a5a890, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotation: {x: 0, y: 50, z: 0}

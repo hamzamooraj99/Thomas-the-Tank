@@ -10,9 +10,13 @@ public class Timer : MonoBehaviour
     [SerializeField] private TextMeshProUGUI tenthSecond;
     [SerializeField] private TextMeshProUGUI onethSecond;
 
+    private bool gameOverTriggered = false;
+    private PlayerTankInfo tank;
+
     void Start()
     {
         ResetTimer();
+        tank = FindFirstObjectByType<PlayerTankInfo>();
     }
 
     void Update()
@@ -20,6 +24,9 @@ public class Timer : MonoBehaviour
         if(timer > 0){
             timer -= Time.deltaTime;
             UpdateTimerDisplay(timer);
+        }else if(!gameOverTriggered){
+            gameOverTriggered = true;
+            tank.PlayerDied();
         }else
             Flash();
     }
@@ -35,7 +42,7 @@ public class Timer : MonoBehaviour
         float seconds = Mathf.FloorToInt(time % 60);
 
         string currTime = string.Format("{00:00}{1:00}", minutes, seconds);
-        Debug.Log(currTime);
+        // Debug.Log(currTime);
         tenthMinute.text = currTime[0].ToString();
         onethMinute.text = currTime[1].ToString();
         tenthSecond.text = currTime[2].ToString();
