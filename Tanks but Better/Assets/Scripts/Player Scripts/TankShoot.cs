@@ -25,6 +25,11 @@ public class TankShoot : MonoBehaviour
     private Coroutine noAmmoWarningFlash;
     private bool isFlashing = false;
 
+    [SerializeField] AudioClip cannonSound;
+    [SerializeField] AudioClip reloadSound;
+
+    [SerializeField] public GameObject muzzleFlash;
+
     [HideInInspector] public bool allowInvoke = true;
 
     private void Start()
@@ -92,6 +97,8 @@ public class TankShoot : MonoBehaviour
         float y = Random.Range(-weaponData.spread, weaponData.spread);
         Vector3 directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
 
+        StartCoroutine(ShowMuzzleFlash());
+
         //Instantiate Bullet
         GameObject currBullet = Instantiate(weaponData.bullet, spawnPoint.position, Quaternion.identity);
         currBullet.layer = spawnPoint.gameObject.layer;
@@ -103,6 +110,7 @@ public class TankShoot : MonoBehaviour
         currBullet.transform.forward = directionWithSpread.normalized;
         currBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * weaponData.shootForce, ForceMode.Impulse);
         currBullet.GetComponent<Rigidbody>().AddForce(fpsCam.transform.up * weaponData.upwardForce, ForceMode.Impulse);
+        SoundFXManager.instance.PlaySoundFXClip(cannonSound, transform, 0.5f);
 
         weaponData.currentAmmo--;
         weaponData.totalAmmo--;
@@ -132,6 +140,7 @@ public class TankShoot : MonoBehaviour
         if(weaponData.totalAmmo > 0){
             reloading = true;
             reloadBarObject.SetActive(true);
+            // SoundFXManager.instance.PlaySoundFXClip(reloadSound, transform, 0.7f);
             StartCoroutine(ReloadTimer());
         }
         
@@ -214,5 +223,12 @@ public class TankShoot : MonoBehaviour
                 yield return null;
             }
         }
+    }
+
+    private IEnumerator ShowMuzzleFlash()
+    {
+        muzzleFlash.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        muzzleFlash.SetActive(false);
     }
 }

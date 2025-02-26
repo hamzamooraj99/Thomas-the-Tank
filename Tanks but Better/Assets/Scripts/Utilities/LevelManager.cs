@@ -6,6 +6,9 @@ public class LevelManager : MonoBehaviour
     public Texture2D cursorTexture;
 
     public Transform[] spawnPoints;
+
+    [SerializeField] public AudioClip explosionSound;
+
     private GameObject player;
 
     void Awake()
@@ -21,6 +24,7 @@ public class LevelManager : MonoBehaviour
 
     public void GameOver()
     {
+        SoundFXManager.instance.PlaySoundFXClip(explosionSound, transform, 0.7f);
         UIManager _ui = GetComponent<UIManager>();
         if(_ui != null) _ui.ToggleDeathPanel();
         Cursor.visible = true;

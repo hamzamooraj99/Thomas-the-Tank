@@ -23,16 +23,31 @@ public class VehicleMovement : MonoBehaviour
     public float maxSteerAngle = 20f;
     public float accelerationWhileTurning = 3f;
 
+    [Header("Sound Clips")]
+    [SerializeField] public AudioClip idle;
+    [SerializeField] public AudioClip moving;
+
     private float currAcceleration;
     private float currBrakeForce;
     private float turnInput;
+    private AudioSource engineAudio;
+    private float targetVolume;
+
     void Awake()
     {
+        engineAudio = GetComponent<AudioSource>();
+        if(engineAudio == null) engineAudio = gameObject.AddComponent<AudioSource>();
+
+        engineAudio.clip = idle;
+        engineAudio.loop = true;
+        engineAudio.volume = 0.5f;
+        engineAudio.Play();
     }
 
     private void FixedUpdate()
     {
         PlayerControl();
+        HandleEngineSound();
     }
 
     private void PlayerControl()
@@ -113,5 +128,25 @@ public class VehicleMovement : MonoBehaviour
         collider.GetWorldPose(out position, out rotation);
 
         mesh.position = position; mesh.rotation = rotation;
+    }
+
+    private void HandleEngineSound()
+    {
+        float speed = Mathf.Abs(currAcceleration);
+        targetVolume = Mathf.Lerp(0.3f, 1f, speed);
+
+        if(speed > 0.1f){
+            if(engineAudio.clip != moving){
+                engineAudio.clip = moving;
+                engineAudio.Play();
+            }
+        }else{
+            if(engineAudio.clip != idle){
+                engineAudio.clip = idle;
+                engineAudio.Play();
+            }
+        }
+
+        engineAudio.volume = Mathf.Lerp(engineAudio.volume, targetVolume, Time.deltaTime * 10f);
     }
 }

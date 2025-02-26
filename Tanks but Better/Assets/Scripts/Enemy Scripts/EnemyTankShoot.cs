@@ -14,6 +14,11 @@ public class EnemyTankShoot : MonoBehaviour
     [SerializeField] Rigidbody enemyRB;
     [SerializeField] Transform spawnPoint;
 
+    [SerializeField] AudioClip cannonSound;
+
+    public GameObject muzzleFlash;
+    public Transform muzzlePosition;
+
     void Start()
     {
         EnemyTankInfo enemyTankInfo = GetComponentInParent<EnemyTankInfo>();
@@ -33,6 +38,8 @@ public class EnemyTankShoot : MonoBehaviour
         readyToShoot = false; // Set readyToShoot to false to prevent multiple shots
         Vector3 shootDirection = spawnPoint.forward; // Fire in turret's forward direction
 
+        StartCoroutine(ShowMuzzleFlash());
+
         // Instantiate Bullet
         GameObject currBullet = Instantiate(weaponData.bullet, spawnPoint.position, Quaternion.identity);
         currBullet.GetComponent<Rigidbody>().AddForce(shootDirection * weaponData.shootForce, ForceMode.Impulse);
@@ -43,6 +50,7 @@ public class EnemyTankShoot : MonoBehaviour
             bulletDamage.damage = weaponData.damage;
 
         weaponData.currentAmmo--;
+        SoundFXManager.instance.PlaySoundFXClip(cannonSound, transform, 0.5f);
 
         // Ensure ResetShot() runs by using StartCoroutine
         StartCoroutine(ResetShot());
@@ -52,5 +60,12 @@ public class EnemyTankShoot : MonoBehaviour
     {
         yield return new WaitForSeconds(timeBetweenShots); // Wait before allowing another shot
         readyToShoot = true; // Reset readyToShoot to allow next shot
+    }
+
+    private IEnumerator ShowMuzzleFlash()
+    {
+        muzzleFlash.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        muzzleFlash.SetActive(false);
     }
 }

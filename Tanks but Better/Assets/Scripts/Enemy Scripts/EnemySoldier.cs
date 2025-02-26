@@ -72,9 +72,7 @@ public class EnemySoldier : MonoBehaviour
         else
         {
             anim.SetBool("isDead", true);
-            // agent.enabled = false;
-            gameObject.transform.DetachChildren();
-            Destroy(gameObject, 2f);
+            Destroy(gameObject, 0.5f);
         }
     }
 

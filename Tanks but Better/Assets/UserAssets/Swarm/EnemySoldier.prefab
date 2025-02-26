@@ -138,9 +138,9 @@ GameObject:
   - component: {fileID: 2494044642689887593}
   - component: {fileID: 8015375982447803546}
   - component: {fileID: 6460299996288774822}
-  - component: {fileID: 6836383140884239745}
   - component: {fileID: 2493312515574901959}
   - component: {fileID: 3031021859247862569}
+  - component: {fileID: 3905888357260031923}
   m_Layer: 0
   m_Name: EnemySoldier
   m_TagString: EnemySoldiers
@@ -209,28 +209,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!64 &6836383140884239745
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3649340205518878278}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!54 &2493312515574901959
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -275,6 +253,29 @@ MonoBehaviour:
   followTarget: {fileID: 0}
   firePoint: {fileID: 0}
   current_state: 0
+--- !u!136 &3905888357260031923
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3649340205518878278}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.25, z: 0}
 --- !u!1 &3733446219639293928
 GameObject:
   m_ObjectHideFlags: 0

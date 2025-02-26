@@ -69,6 +69,13 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] public float explosionRadius = 5f;
     [SerializeField] public float destructionDelay = 2f;
     [SerializeField] public GameObject explosionEffect;
+    [SerializeField] public AudioClip explosionSound;
+
+    [Header("Sound Stuffs")]
+    [SerializeField] public AudioClip idle;
+    [SerializeField] public AudioClip moving;
+    private AudioSource engineAudio;
+    private float targetVolume;
 
     private NavMeshAgent agent;
     private EnemyTankInfo tankInfo;
@@ -104,6 +111,14 @@ public class EnemyAI : MonoBehaviour
         {
             tankBody.transform, tankTower.transform, tankCannon.transform, frontLeftMesh, frontRightMesh, backLeftMesh, backRightMesh
         };
+
+        engineAudio = GetComponent<AudioSource>();
+        if(engineAudio == null) engineAudio = gameObject.AddComponent<AudioSource>();
+
+        engineAudio.clip = idle;
+        engineAudio.loop = true;
+        engineAudio.volume = 0.5f;
+        engineAudio.Play();
     }
 
     void FixedUpdate()
@@ -131,6 +146,8 @@ public class EnemyAI : MonoBehaviour
                 TowerMovement("scan");
             }
         }
+
+        HandleEngineSound();
     }
 
     void Move()
@@ -465,8 +482,12 @@ public class EnemyAI : MonoBehaviour
             if(obj.name.ToLower().Contains("soldier")){
                 var rb = obj.GetComponent<Rigidbody>();
                 NavMeshAgent agent = obj.GetComponent<NavMeshAgent>();
+                agent.enabled = false;
+                rb.isKinematic = false;
+                rb.useGravity = true;
                 if (rb == null) continue;
-                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 0f, ForceMode.Impulse);
+                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 1f, ForceMode.Impulse);
+                // agent.enabled = true;
             }else{
                 var rb = obj.GetComponent<Rigidbody>();
                 if (rb == null) continue;
@@ -502,6 +523,7 @@ public class EnemyAI : MonoBehaviour
             if(part.name.ToLower().Contains("mesh"))
                 part.gameObject.AddComponent<SphereCollider>();
         }
+        SoundFXManager.instance.PlaySoundFXClip(explosionSound, transform, 0.7f);
 
         StartCoroutine(DestroyTank());
     }
@@ -515,5 +537,25 @@ public class EnemyAI : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    private void HandleEngineSound()
+    {
+        float speed = Mathf.Abs(agent.acceleration);
+        targetVolume = Mathf.Lerp(0.3f, 1f, speed);
+
+        if(speed > 0.1f){
+            if(engineAudio.clip != moving){
+                engineAudio.clip = moving;
+                engineAudio.Play();
+            }
+        }else{
+            if(engineAudio.clip != idle){
+                engineAudio.clip = idle;
+                engineAudio.Play();
+            }
+        }
+
+        engineAudio.volume = Mathf.Lerp(engineAudio.volume, targetVolume, Time.deltaTime * 10f);
     }
 }
