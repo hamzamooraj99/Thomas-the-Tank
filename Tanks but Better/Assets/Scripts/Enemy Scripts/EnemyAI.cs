@@ -68,6 +68,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] public float explosionForce = 20f;
     [SerializeField] public float explosionRadius = 5f;
     [SerializeField] public float destructionDelay = 2f;
+    [SerializeField] public GameObject explosionEffect;
 
     private NavMeshAgent agent;
     private EnemyTankInfo tankInfo;
@@ -117,15 +118,15 @@ public class EnemyAI : MonoBehaviour
                 TowerMovement("attack");
                 tankShoot.Shoot();
             }else if(((wasInFOV && targetEscaped) || shot) && tankInfo.GetBattery() >= 50){
-                Debug.Log("SEARCHING");
+                // Debug.Log("SEARCHING");
                 SearchForTarget();
             }else if(tankInfo.GetBattery() < 50){
-                Debug.Log("RETREAT");
+                // Debug.Log("RETREAT");
                 Retreat();
                 TowerMovement("attack");
             }
             else{
-                Debug.Log("PATROL");
+                // Debug.Log("PATROL");
                 Patrol();
                 TowerMovement("scan");
             }
@@ -323,7 +324,7 @@ public class EnemyAI : MonoBehaviour
                 RaycastHit hit;
                 if(Physics.Raycast(transform.position, directionToTarget, out hit, fovRange)){
                     if(hit.transform == target){
-                        Debug.Log("PLAYER IN FOV");
+                        // Debug.Log("PLAYER IN FOV");
                         return true;
                     }
                 }
@@ -342,7 +343,7 @@ public class EnemyAI : MonoBehaviour
 
         float distanceToTarget = Vector3.Distance(transform.position, target.position);
         if(distanceToTarget < proximityRadius){
-            Debug.Log("PLAYER IN PROXIMITY");
+            // Debug.Log("PLAYER IN PROXIMITY");
             return true;
         }
 
@@ -354,15 +355,15 @@ public class EnemyAI : MonoBehaviour
     
     void isShot()
     {
-        Debug.Log("ENEMY SHOT... SEARCHING FOR TARGET");
+        // Debug.Log("ENEMY SHOT... SEARCHING FOR TARGET");
         shot = true;
     }
 
     void Retreat()
     {
-        Debug.Log("RETREAT");
+        // Debug.Log("RETREAT");
         Transform healthItem = FindNearestHealthItem();
-        Debug.Log($"Looking for {healthItem.name}");
+        // Debug.Log($"Looking for {healthItem.name}");
         if(healthItem != null){
             agent.SetDestination(healthItem.position);
             agent.stoppingDistance = 0f;
@@ -382,7 +383,7 @@ public class EnemyAI : MonoBehaviour
 
     void Patrol()
     {
-        Debug.Log("PATROL");
+        // Debug.Log("PATROL");
         if(Vector3.Distance(transform.position, agent.destination) < 2f)
             agent.SetDestination(GetRandomWaypoint());
             Move();
@@ -428,7 +429,7 @@ public class EnemyAI : MonoBehaviour
         }else{
             agent.SetDestination(target.position);
             Move();
-            Debug.Log($"SEARCH: {searchTimer} / {searchTimeLimit}");
+            // Debug.Log($"SEARCH: {searchTimer} / {searchTimeLimit}");
         }
     }
 
@@ -453,6 +454,26 @@ public class EnemyAI : MonoBehaviour
 
     public void Explode()
     {
+        // Play explosion particle effect
+        GameObject explosion = Instantiate(explosionEffect, transform.position, Quaternion.identity) as GameObject;
+        ParticleSystem ps = explosion.GetComponent<ParticleSystem>();
+        if(ps) ps.Play();
+        Destroy(explosion, 2f); // Destroy the particle effect after 3 seconds
+
+        var surroundingColliders = Physics.OverlapSphere(transform.position, explosionRadius);
+        foreach(var obj in surroundingColliders){
+            if(obj.name.ToLower().Contains("soldier")){
+                var rb = obj.GetComponent<Rigidbody>();
+                NavMeshAgent agent = obj.GetComponent<NavMeshAgent>();
+                if (rb == null) continue;
+                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 0f, ForceMode.Impulse);
+            }else{
+                var rb = obj.GetComponent<Rigidbody>();
+                if (rb == null) continue;
+                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 1f, ForceMode.Impulse);
+            }            
+            
+        }
         if(mainRB){
             mainRB.isKinematic = true;
             mainRB.detectCollisions = false;

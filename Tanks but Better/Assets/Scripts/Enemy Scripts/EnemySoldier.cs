@@ -8,7 +8,6 @@ public class EnemySoldier : MonoBehaviour
     [Header("Tank Info")]
     [SerializeField] public GameObject tank;
     [SerializeField] float followDistance = 10;
-    [SerializeField] float minfollowDistance = 5;
     [SerializeField] public Transform followTarget;
     [SerializeField] public Transform firePoint;
     private int tankBattery;
@@ -73,6 +72,8 @@ public class EnemySoldier : MonoBehaviour
         else
         {
             anim.SetBool("isDead", true);
+            // agent.enabled = false;
+            gameObject.transform.DetachChildren();
             Destroy(gameObject, 2f);
         }
     }

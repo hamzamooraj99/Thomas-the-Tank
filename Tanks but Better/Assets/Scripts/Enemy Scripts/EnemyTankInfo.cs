@@ -25,6 +25,8 @@ public class EnemyTankInfo : MonoBehaviour
     [HideInInspector] public WeaponData weapon;
     [HideInInspector] public int maxAmmo;
 
+    [SerializeField] public bool debug = false;
+
     public delegate void DamageTakenHandler();
     public event DamageTakenHandler onDamageTaken;
 
@@ -55,6 +57,13 @@ public class EnemyTankInfo : MonoBehaviour
     {        
         healthBar.transform.rotation = cameraPosition.transform.rotation;
         healthBar.transform.position = enemy.transform.position + offset;
+
+        if(debug){
+            if(Input.GetKeyDown(KeyCode.B) && debug){
+                TakeDamage(100);
+                // Debug.Log($"Battery reduced to {currBattery}");
+            }
+        }
     }
 
     void InitialiseTank()
