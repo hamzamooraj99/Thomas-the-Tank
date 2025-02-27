@@ -4,10 +4,11 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - PlayerPart
-  - Vehical
-  - Plane
-  - PlayerCam
+  - Enemy
+  - Collectable
+  - HealthItem
+  - Damage
+  - EnemySoldiers
   layers:
   - Default
   - TransparentFX
@@ -18,11 +19,11 @@ TagManager:
   - 
   - Soldier
   - Ground
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Obstacles
+  - Player
+  - Enemy
+  - Collectable
+  - HealthItem
   - 
   - 
   - 
