@@ -25,8 +25,8 @@ public class TankShoot : MonoBehaviour
     private Coroutine noAmmoWarningFlash;
     private bool isFlashing = false;
 
+    [Header("Audio Clips")]
     [SerializeField] AudioClip cannonSound;
-    [SerializeField] AudioClip reloadSound;
 
     [SerializeField] public GameObject muzzleFlash;
 

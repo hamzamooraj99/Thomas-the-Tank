@@ -5,21 +5,27 @@ using UnityEngine.UI;
 
 public class VignetteManager : MonoBehaviour
 {
-    private Image vignette;
+    [SerializeField] private Image vignette;
+    [SerializeField] private Image constantVignette;
     public float flashDuration = 0.2f;
     public float fadeDuration = 1.0f;
 
     void Start()
     {
-        vignette = GetComponent<Image>();
-        SetAlpha(0);
+        SetAlpha(vignette, 0f);
+        SetAlpha(constantVignette, 0f);
     }
 
-    private void SetAlpha(float alpha)
+    private void SetAlpha(Image vig, float alpha)
     {
-        Color color = vignette.color;
+        Color color = vig.color;
         color.a = alpha;
-        vignette.color = color;
+        vig.color = color;
+    }
+
+    public void ActivateConstantVignette(float alpha)
+    {
+        SetAlpha(constantVignette, alpha);
     }
 
     public void FlashVignette()
@@ -30,17 +36,17 @@ public class VignetteManager : MonoBehaviour
 
     private IEnumerator FlashAndFade()
     {
-        SetAlpha(0.5f);
+        SetAlpha(vignette, 0.5f);
         yield return new WaitForSeconds(flashDuration);
 
         float elapsedTime = 0f;
         while(elapsedTime < fadeDuration){
             elapsedTime += Time.deltaTime;
             float alpha = Mathf.Lerp(0.5f, 0f, elapsedTime / fadeDuration);
-            SetAlpha(alpha);
+            SetAlpha(vignette, alpha);
             yield return null;
         }
 
-        SetAlpha(0f);
+        SetAlpha(vignette, 0f);
     }
 }

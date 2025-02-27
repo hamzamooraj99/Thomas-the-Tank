@@ -17,7 +17,8 @@ public class EnemyTankInfo : MonoBehaviour
     private EnemyAI tankAI;
 
     [Header("Enemy UI References")]
-    [SerializeField] Slider healthBar;
+    private Slider healthBar;
+    private TMP_Text state;
     [SerializeField] Camera cameraPosition;
     [SerializeField] Transform enemy;
     [SerializeField] Vector3 offset;
@@ -25,7 +26,9 @@ public class EnemyTankInfo : MonoBehaviour
     [HideInInspector] public WeaponData weapon;
     [HideInInspector] public int maxAmmo;
 
+    [Header("Debug")]
     [SerializeField] public bool debug = false;
+    [SerializeField] private bool showState = false;
 
     public delegate void DamageTakenHandler();
     public event DamageTakenHandler onDamageTaken;
@@ -46,17 +49,28 @@ public class EnemyTankInfo : MonoBehaviour
 
         Canvas canvas = GetComponentInChildren<Canvas>();
         healthBar = canvas.GetComponentInChildren<Slider>();
+        state = canvas.GetComponentInChildren<TMP_Text>();
     }
 
     void Start()
     {
-        UpdateHealthBar(currBattery);    
+        UpdateHealthBar(currBattery);
+        if(showState){
+            state.gameObject.SetActive(true);
+            UpdateState();
+        }else state.gameObject.SetActive(false);
     }
 
     void Update()
     {        
         healthBar.transform.rotation = cameraPosition.transform.rotation;
         healthBar.transform.position = enemy.transform.position + offset;
+
+        if(state != null){
+            state.transform.rotation = cameraPosition.transform.rotation;
+            state.transform.position = enemy.transform.position + offset + new Vector3(0f, 1f, 0f);
+            UpdateState();
+        }
 
         if(debug){
             if(Input.GetKeyDown(KeyCode.B) && debug){
@@ -86,6 +100,7 @@ public class EnemyTankInfo : MonoBehaviour
         // Debug.Log($"Tank taken {damage} damage. Current Battery = {currBattery}");
         if(currBattery <= 0){
             KillCounterManager.instance.AddKill();
+            WinManager.instance.EnemyDestroyed();
             tankAI.Explode();
             Debug.Log($"{tankData.name} destroyed");
         }
@@ -100,5 +115,10 @@ public class EnemyTankInfo : MonoBehaviour
     private void UpdateHealthBar(int currValue)
     {
         healthBar.value = (float) currValue / maxBattery;
+    }
+
+    private void UpdateState()
+    {
+        state.text = tankAI.STATE;
     }
 }

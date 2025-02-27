@@ -1,0 +1,31 @@
+fileFormatVersion: 2
+guid: f84b899600c724440bfd5e1b89b85b2c
+labels:
+- Loopable
+- Cyberleaf
+- Music
+AudioImporter:
+  serializedVersion: 6
+  defaultSettings:
+    loadType: 1
+    sampleRateSetting: 0
+    sampleRateOverride: 0
+    compressionFormat: 0
+    quality: 0
+    conversionMode: 0
+  platformSettingOverrides: {}
+  forceToMono: 0
+  normalize: 1
+  preloadAudioData: 1
+  loadInBackground: 0
+  3D: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 4050
+  packageName: Casual Soldiers - Mini Music Pack
+  packageVersion: 1.1
+  assetPath: Assets/Cyberleaf Music - Casual Soldiers/CasualSoldiers_THEME.wav
+  uploadId: 134311

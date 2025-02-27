@@ -77,6 +77,9 @@ public class EnemyAI : MonoBehaviour
     private AudioSource engineAudio;
     private float targetVolume;
 
+    [Header("Debug")]
+    [SerializeField] private bool drawGizmos = false;
+
     private NavMeshAgent agent;
     private EnemyTankInfo tankInfo;
     private EnemyTankShoot tankShoot;
@@ -86,9 +89,12 @@ public class EnemyAI : MonoBehaviour
     private bool shot = false;
     private Rigidbody mainRB;
     private List<Transform> tankParts;
+    [HideInInspector] public string STATE;
+
 
     void Start()
     {
+        #region NavMeshAgentSetup
         agent = GetComponent<NavMeshAgent>();
         agent.updatePosition = false;
         agent.updateRotation = true;
@@ -100,7 +106,9 @@ public class EnemyAI : MonoBehaviour
         // agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
 
         agent.SetDestination(GetRandomWaypoint());
+        #endregion
 
+        #region TankRelatedStuffs
         tankInfo = GetComponent<EnemyTankInfo>();
         tankShoot = GetComponentInChildren<EnemyTankShoot>();
 
@@ -111,14 +119,24 @@ public class EnemyAI : MonoBehaviour
         {
             tankBody.transform, tankTower.transform, tankCannon.transform, frontLeftMesh, frontRightMesh, backLeftMesh, backRightMesh
         };
+        #endregion
 
+        #region Audio Setup
         engineAudio = GetComponent<AudioSource>();
         if(engineAudio == null) engineAudio = gameObject.AddComponent<AudioSource>();
+
+        //Audio Source Settings
+        engineAudio.spatialBlend = 1.0f;
+        engineAudio.rolloffMode = AudioRolloffMode.Logarithmic;
+        engineAudio.minDistance = 5f;
+        engineAudio.maxDistance = 50f;
+        engineAudio.dopplerLevel = 1.0f;
 
         engineAudio.clip = idle;
         engineAudio.loop = true;
         engineAudio.volume = 0.5f;
         engineAudio.Play();
+        #endregion
     }
 
     void FixedUpdate()
@@ -132,18 +150,22 @@ public class EnemyAI : MonoBehaviour
                 Move();
                 TowerMovement("attack");
                 tankShoot.Shoot();
+                STATE = "ATTACK";
             }else if(((wasInFOV && targetEscaped) || shot) && tankInfo.GetBattery() >= 50){
                 // Debug.Log("SEARCHING");
                 SearchForTarget();
+                STATE = "SEARCH";
             }else if(tankInfo.GetBattery() < 50){
                 // Debug.Log("RETREAT");
                 Retreat();
                 TowerMovement("attack");
+                STATE = "RETREAT";
             }
             else{
                 // Debug.Log("PATROL");
                 Patrol();
                 TowerMovement("scan");
+                STATE = "PATROL";
             }
         }
 
@@ -452,19 +474,23 @@ public class EnemyAI : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        // Draw FOV cone
-        Gizmos.color = Color.yellow;
-        float halfFOV = fovAngle / 2f;
-        Quaternion leftRayRotation = Quaternion.AngleAxis(-halfFOV, Vector3.up);
-        Quaternion rightRayRotation = Quaternion.AngleAxis(halfFOV, Vector3.up);
-        Vector3 leftRayDirection = leftRayRotation * tankTower.transform.forward;
-        Vector3 rightRayDirection = rightRayRotation * tankTower.transform.forward;
+        if(drawGizmos){
+            // Draw FOV cone
+            Gizmos.color = Color.yellow;
+            float halfFOV = fovAngle / 2f;
+            Quaternion leftRayRotation = Quaternion.AngleAxis(-halfFOV, Vector3.up);
+            Quaternion rightRayRotation = Quaternion.AngleAxis(halfFOV, Vector3.up);
+            Vector3 leftRayDirection = leftRayRotation * tankTower.transform.forward;
+            Vector3 rightRayDirection = rightRayRotation * tankTower.transform.forward;
 
-        Gizmos.DrawRay(transform.position, leftRayDirection * fovRange);
-        Gizmos.DrawRay(transform.position, rightRayDirection * fovRange);
+            Gizmos.DrawRay(transform.position, leftRayDirection * fovRange);
+            Gizmos.DrawRay(transform.position, rightRayDirection * fovRange);
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, proximityRadius);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, proximityRadius);
+        }else{
+            return;
+        }
     }
 
     void OnDestroy() => tankInfo.onDamageTaken -= isShot;

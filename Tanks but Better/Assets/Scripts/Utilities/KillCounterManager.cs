@@ -6,7 +6,7 @@ public class KillCounterManager : MonoBehaviour
     public static KillCounterManager instance;
     public TMP_Text killCounter;
 
-    private int killCount = 0;
+    public int killCount = 0;
 
     void Awake()
     {

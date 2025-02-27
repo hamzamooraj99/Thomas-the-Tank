@@ -21,6 +21,11 @@ public class Timer : MonoBehaviour
 
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.F1)){
+            timer = 5f;
+            UpdateTimerDisplay(timer);
+        }
+        
         if(timer > 0){
             timer -= Time.deltaTime;
             UpdateTimerDisplay(timer);

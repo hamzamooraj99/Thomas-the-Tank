@@ -23,7 +23,7 @@ public class EnemyLowHealthSmoke : MonoBehaviour
     void Update()
     {
         transform.position = followTarget.position;
-        if(playerTankInfo.GetBattery() < 200)
+        if(playerTankInfo.GetBattery() < 20)
         {
             rend.enabled = true;
             // Debug.Log("LowHealthSmoke: Low health detected");

@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using Seagull.Interior_01;
 
 public class EnemyTankShoot : MonoBehaviour
 {
@@ -50,7 +51,8 @@ public class EnemyTankShoot : MonoBehaviour
             bulletDamage.damage = weaponData.damage;
 
         weaponData.currentAmmo--;
-        SoundFXManager.instance.PlaySoundFXClip(cannonSound, transform, 0.5f);
+        
+        PlayCannonSound();
 
         // Ensure ResetShot() runs by using StartCoroutine
         StartCoroutine(ResetShot());
@@ -67,5 +69,22 @@ public class EnemyTankShoot : MonoBehaviour
         muzzleFlash.SetActive(true);
         yield return new WaitForSeconds(0.1f);
         muzzleFlash.SetActive(false);
+    }
+
+    private void PlayCannonSound()
+    {
+        GameObject tempAudioSourceObj = new GameObject("TempCannonSound");
+        tempAudioSourceObj.transform.position = transform.position;
+        AudioSource tempAudioSource = tempAudioSourceObj.AddComponent<AudioSource>();
+
+        tempAudioSource.clip = cannonSound;
+        tempAudioSource.spatialBlend = 1.0f;
+        tempAudioSource.rolloffMode = AudioRolloffMode.Logarithmic;
+        tempAudioSource.minDistance = 5f; 
+        tempAudioSource.maxDistance = 50f; 
+        tempAudioSource.volume = 0.5f;
+        tempAudioSource.Play();
+
+        Destroy(tempAudioSourceObj, cannonSound.length);
     }
 }

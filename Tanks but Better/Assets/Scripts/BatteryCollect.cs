@@ -10,8 +10,6 @@ public class BatteryCollect : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        Debug.Log($"Triggered by: {collider.gameObject.name}"); // Add this line for debugging
-        
         if (collider.TryGetComponent(out PlayerTankInfo pTankInfo))
         {
             if(pTankInfo.GetBattery() < 1000){

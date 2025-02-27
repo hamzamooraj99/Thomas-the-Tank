@@ -50,12 +50,29 @@ public class PlayerTankInfo : MonoBehaviour
         InitialiseTank();
     }
 
+    void Start()
+    {
+        // Debug.Log($"[Player Start] Using Spawn Position: {PlayerSpawnManager.spawnPosition}, Rotation: {PlayerSpawnManager.spawnRotation.eulerAngles}");
+
+        if(PlayerSpawnManager.spawnPosition != Vector3.zero){
+            transform.position = PlayerSpawnManager.spawnPosition;
+            transform.rotation = PlayerSpawnManager.spawnRotation;
+        }else{
+            Debug.LogWarning("No Spawn Positions set, using default");
+        }
+    }
+
     //DEBUGGING PURPOSES
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.K) && debug){
             TakeDamage(100);
-            Debug.Log($"Battery reduced to {currBattery}");
+            // Debug.Log($"Battery reduced to {currBattery}");
+        }
+
+        if(Input.GetKeyDown(KeyCode.L) && debug){
+            currBattery += 100;
+            UpdateHealthUI();
         }
     }
 
@@ -69,13 +86,10 @@ public class PlayerTankInfo : MonoBehaviour
         isFriendly = tankData.friendly;
         maxAmmo = weapon.totalAmmo;
 
+        vignetteManager = FindFirstObjectByType<VignetteManager>();
+
         if(batteryBar) batteryBar.maxValue = tankData.battery;
         UpdateHealthUI();
-
-        vignetteManager = FindFirstObjectByType<VignetteManager>();
-        
-        transform.position = SpawnPointManager.spawnPosition;
-        transform.rotation = SpawnPointManager.spawnRotation;
 
         // string play = isPlayabale ? "playable" : "not playable";
         // Debug.Log($"Tank {tankData.name} initialised with {currArmour} armour, {currBattery} battery and a {weapon.name}. The character is {play}");
@@ -84,7 +98,7 @@ public class PlayerTankInfo : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currBattery -= damage;
-        if(vignetteManager != null)
+        if(currBattery > 200 && vignetteManager != null)
             vignetteManager.FlashVignette();
             
         if(currBattery <= 0){
@@ -97,8 +111,8 @@ public class PlayerTankInfo : MonoBehaviour
 
     public void PlayerDied()
     {
-        LevelManager.instance.GameOver();
         gameObject.SetActive(false);
+        LevelManager.instance.GameOver();
     }
 
     public void RestoreBattery(int restoration)
@@ -115,6 +129,9 @@ public class PlayerTankInfo : MonoBehaviour
             if(batteryFill) batteryFill.color = GetBatteryColor(currBattery / (float)tankData.battery);
         }
         FlashingEffect();
+
+        if(currBattery <= 200) vignetteManager.ActivateConstantVignette(0.5f);
+        else vignetteManager.ActivateConstantVignette(0f);
     }
 
     #region BATTERY EFFECTS

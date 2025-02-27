@@ -10,6 +10,16 @@ public class EnemySoldier : MonoBehaviour
     [SerializeField] float followDistance = 10;
     [SerializeField] public Transform followTarget;
     [SerializeField] public Transform firePoint;
+
+    [Header("Audio Stuffs")]
+    private AudioSource footStepSource;
+    [SerializeField] private AudioClip footStepClip;
+    private AudioSource gunSource;
+    [SerializeField] private AudioClip gunClip;
+
+    private bool isRunning = false;
+    private bool isShooting = false;
+
     private int tankBattery;
     private Animator anim;
     private NavMeshAgent agent;
@@ -33,7 +43,28 @@ public class EnemySoldier : MonoBehaviour
         tankInfo = tank.GetComponent<EnemyTankInfo>();
         tankAI = tank.GetComponent<EnemyAI>();
         agent = GetComponent<NavMeshAgent>();
-        
+
+        // if (footStepSource == null)
+        //     footStepSource = gameObject.AddComponent<AudioSource>();
+
+        // if (gunSource == null)
+        //     gunSource = gameObject.AddComponent<AudioSource>();
+
+        // footStepSource.clip = footStepClip;
+        // footStepSource.loop = true;
+        // footStepSource.spatialBlend = 1.0f;
+        // footStepSource.rolloffMode = AudioRolloffMode.Logarithmic;
+        // footStepSource.minDistance = 5f;
+        // footStepSource.maxDistance = 50f;
+        // footStepSource.dopplerLevel = 1.0f;
+
+        // gunSource.clip = gunClip;
+        // gunSource.loop = false;
+        // gunSource.spatialBlend = 1.0f;
+        // gunSource.rolloffMode = AudioRolloffMode.Logarithmic;
+        // gunSource.minDistance = 5f;
+        // gunSource.maxDistance = 50f;
+        // gunSource.dopplerLevel = 1.0f;
     }
 
     // Update is called once per frame
@@ -50,6 +81,12 @@ public class EnemySoldier : MonoBehaviour
                 anim.SetBool("shoot", false);
             
                 agent.SetDestination(followTarget.position);
+
+                // isRunning = true;
+                // isShooting = false;
+
+                // RunningSound();
+                // ShootingSound();
             }
             else if (tankAI.isPlayerInFOV())
             {
@@ -59,6 +96,12 @@ public class EnemySoldier : MonoBehaviour
                 anim.SetBool("idle", false);
                 anim.SetBool("run", false);
                 anim.SetBool("shoot", true);
+
+                // isRunning = false;
+                // isShooting = true;
+
+                // ShootingSound();
+                // RunningSound();
             }
             else
             {
@@ -67,6 +110,12 @@ public class EnemySoldier : MonoBehaviour
                 anim.SetBool("idle", true);
                 anim.SetBool("run", false);
                 anim.SetBool("shoot", false);
+
+                // isRunning = false;
+                // isShooting = false;
+
+                // ShootingSound();
+                // RunningSound();
             }
         }
         else
@@ -76,20 +125,29 @@ public class EnemySoldier : MonoBehaviour
         }
     }
 
-    void stateIdle()
+    void RunningSound()
     {
-
+        if (isRunning)
+        {
+            if (!footStepSource.isPlaying)
+                footStepSource.Play();
+        }
+        else
+        {
+            footStepSource.Stop();
+        }
     }
 
-    void stateFollow()
+    void ShootingSound()
     {
-
-
-    }
-
-    void stateAttack()
-    {
-
-
+        if (isShooting)
+        {
+            if (!gunSource.isPlaying)
+                gunSource.Play();
+        }
+        else
+        {
+            gunSource.Stop();
+        }
     }
 }
